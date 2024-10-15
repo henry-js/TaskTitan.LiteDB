@@ -32,6 +32,12 @@ public static class Enums
         Real,
         Integer,
         List,
-        Indicator
+        Indicator,
+        Long,
+        Short,
+        Full,
+        Parent,
+        Indented,
+        Duration
     }
 }

@@ -30,14 +30,17 @@ public sealed class AddCommand : Command
             aliases: ["-m", "--modify"],
             parseArgument: ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
             description: "Due date etc")
-        { AllowMultipleArgumentsPerToken = true };
+        {
+            AllowMultipleArgumentsPerToken = true,
+            Arity = ArgumentArity.OneOrMore
+        };
         command.AddOption(modificationOption);
     }
 
-    new public class Handler(IAnsiConsole console, ILogger<AddCommand> logger) : ICommandHandler
+    new public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : ICommandHandler
     {
         public required string Description { get; set; }
-        public string? Modify { get; set; }
+        public CommandExpression? Modify { get; set; }
         public int Invoke(InvocationContext context)
         {
             return InvokeAsync(context).Result;
@@ -46,9 +49,22 @@ public sealed class AddCommand : Command
         public async Task<int> InvokeAsync(InvocationContext context)
         {
             var config = new DefaultConfiguration();
+            var tasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid);
+            var orderedTasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid)
+                .FindAll()
+                .Select((item, index) => item.RowId = index);
+            var task = new TaskItem
+            {
+                Description = Description
+            };
 
-            console.WriteLine(JsonSerializer.Serialize(config, new JsonSerializerOptions() { WriteIndented = true }));
-            console.WriteLine($"Created task.");
+            tasks.Insert(task);
+
+            var fetchedTask = tasks.FindById(task.Id);
+
+            console.WriteLine(JsonSerializer.Serialize(fetchedTask));
+
+            console.WriteLine($"Added task {tasks.Count()}");
             return 0;
         }
     }

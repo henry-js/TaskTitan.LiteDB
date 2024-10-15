@@ -10,14 +10,17 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/TaskTitan.Cli/bin/Debug/net9.0/TaskTitan.Cli.dll",
+            "program": "${workspaceFolder}/src/TaskTitan.Cli/bin/Debug/net9.0/win-x64/task.dll",
             "args": [
                 "add",
-                "1 2 3"
+                "i am a description",
+                "-m",
+                "due:tomorrow",
+                "until:1w"
             ],
             "cwd": "${workspaceFolder}/src/TaskTitan.Cli",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "externalTerminal",
+            "console": "internalConsole",
             "stopAtEntry": false
         },
         {

@@ -5,7 +5,7 @@ namespace TaskTitan.Data;
 
 public class TaskItem
 {
-    public int Id { get; set; }
+    public int RowId { get; set; }
     public string Description { get; set; }
     public string Depends { get; set; }
     public string Estimate { get; set; }
@@ -14,17 +14,29 @@ public class TaskItem
     public DateTime? Entry { get; set; }
     public DateTime? Modified { get; set; }
     public Guid? Parent { get; set; }
-    public string Project { get; set; }
+    public string? Project { get; set; }
     public Recurrence Recur { get; set; }
     public DateTime? Scheduled { get; set; }
     public DateTime? Start { get; set; }
-    public string Status { get; set; }
+    public TaskItemStatus Status { get; set; } = TaskItemStatus.Pending;
     public string[] Tags { get; set; } = [];
     public DateTime? Until { get; set; }
     public double Urgency { get; set; }
     public DateTime? Wait { get; set; }
-    public Guid Uuid { get; set; }
+    public Guid Id { get; set; } = Guid.CreateVersion7(DateTime.UtcNow);
 
+}
+
+public record TaskItemStatus(string Value)
+{
+    public static TaskItemStatus Pending => new("Pending");
+    public static TaskItemStatus Started => new("Started");
+    public static TaskItemStatus Done => new("Done");
+
+    public override string ToString()
+    {
+        return Value;
+    }
 }
 
 public class Recurrence
