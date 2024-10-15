@@ -5,10 +5,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Cli</RootNamespace>
+    <RootNamespace>TaskTitan.Cli</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Pidgin" Version="3.3.0" />
     <PackageReference Include="Roslynator.Analyzers" Version="4.12.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -25,13 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskTitan.Data\TaskTitan.Data.csproj" />
   </ItemGroup>
 
 </Project>

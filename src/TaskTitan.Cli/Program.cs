@@ -7,9 +7,9 @@ using System.CommandLine.Builder;
 using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
 using Microsoft.Extensions.Configuration;
-using Data;
-using Cli.Commands;
-using Cli.Extensions;
+using TaskTitan.Cli.Extensions;
+using TaskTitan.Cli.Commands;
+using TaskTitan.Data;
 
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Debug()

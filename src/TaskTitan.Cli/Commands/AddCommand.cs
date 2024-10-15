@@ -1,11 +1,15 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Spectre.Console;
+using TaskTitan.Cli.Utils;
+using TaskTitan.Data;
 
-namespace Cli.Commands;
+namespace TaskTitan.Cli.Commands;
 
-internal sealed class AddCommand : Command
+public sealed class AddCommand : Command
 {
     public AddCommand() : base("add", "Add a task to the list")
     {
@@ -22,9 +26,9 @@ internal sealed class AddCommand : Command
         };
         command.AddArgument(descriptionArgument);
 
-        var modificationOption = new Option<string?>(
+        var modificationOption = new Option<CommandExpression?>(
             aliases: ["-m", "--modify"],
-            parseArgument: ar => string.Join(' ', ar.Tokens),
+            parseArgument: ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
             description: "Due date etc")
         { AllowMultipleArgumentsPerToken = true };
         command.AddOption(modificationOption);
@@ -41,7 +45,9 @@ internal sealed class AddCommand : Command
 
         public async Task<int> InvokeAsync(InvocationContext context)
         {
+            var config = new DefaultConfiguration();
 
+            console.WriteLine(JsonSerializer.Serialize(config, new JsonSerializerOptions() { WriteIndented = true }));
             console.WriteLine($"Created task.");
             return 0;
         }

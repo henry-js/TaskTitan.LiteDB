@@ -3,7 +3,7 @@ using System.CommandLine.Invocation;
 using System.Reflection;
 using Microsoft.Extensions.Hosting;
 
-namespace Cli.Extensions;
+namespace TaskTitan.Cli.Extensions;
 
 public static class CommandLineExtensions
 {
