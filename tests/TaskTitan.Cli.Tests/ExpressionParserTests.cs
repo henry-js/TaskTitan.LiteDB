@@ -16,9 +16,9 @@ public class PidginParserTests
 
     public async Task AnAttributePairCanBeParsedFromText(string text, string key, string value)
     {
-        var result = ExpressionParser.ParseFilterExpression(text);
+        var result = ExpressionParser.ParseFilter(text);
 
-        await Assert.That((result as AttributePair)?.Key)
+        await Assert.That((result.Expr as AttributePair)?.Key)
         .IsEquivalentTo(new BuiltInAttributeKey(key))
         .Or
         .IsEquivalentTo(new UserDefinedAttributeKey(key));
@@ -32,12 +32,12 @@ public class PidginParserTests
     [Arguments("project:work or project:notWork", BinaryOperator.Or)]
     public async Task ABinaryExpressionCanBeParsedFromText(string text, BinaryOperator @operator)
     {
-        var result = ExpressionParser.ParseFilterExpression(text);
+        var result = ExpressionParser.ParseFilter(text);
 
         // await Assert.That(result.Success).IsTrue();
         await Assert.That(result).IsAssignableTo(typeof(BinaryFilter));
 
-        var resultVal = result as BinaryFilter;
+        var resultVal = result.Expr as BinaryFilter;
         await Assert.That(resultVal?.Operator).IsEquivalentTo(@operator);
     }
 
@@ -46,10 +46,10 @@ public class PidginParserTests
     [Arguments("-test", TagOperator.Exclude)]
     public async Task ATagExpressionCanBeParsedFromText(string tagText, TagOperator modifier)
     {
-        var result = ExpressionParser.ParseFilterExpression(tagText);
+        var result = ExpressionParser.ParseFilter(tagText);
 
         await Assert.That(result).IsAssignableTo(typeof(Tag));
-        var tag = result as Tag;
+        var tag = result.Expr as Tag;
         await Assert.That(tag?.Modifier).IsEqualTo(modifier);
     }
 
@@ -59,7 +59,7 @@ public class PidginParserTests
     [Arguments("due:tomorrow or project:home", typeof(BinaryFilter))]
     public async Task DifferentExpressionsCanBeParsedFromText(string text, Type t)
     {
-        var result = ExpressionParser.ParseFilterExpression(text);
+        var result = ExpressionParser.ParseFilter(text);
 
         await Assert.That(result).IsAssignableTo(t);
     }

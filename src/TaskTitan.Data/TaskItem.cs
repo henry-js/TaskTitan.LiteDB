@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using static TaskTitan.Data.Enums;
 
@@ -5,9 +6,18 @@ namespace TaskTitan.Data;
 
 public class TaskItem
 {
+    public TaskItem()
+    {
+
+    }
+    public TaskItem(string description)
+    {
+        Description = description;
+    }
+
     public int RowId { get; set; }
     public string Description { get; set; }
-    public string Depends { get; set; }
+    public int[] Depends { get; set; } = [];
     public DateTime? Due { get; set; }
     public DateTime? End { get; set; }
     public DateTime? Entry { get; set; }
@@ -26,17 +36,18 @@ public class TaskItem
 
 }
 
-public record TaskItemStatus(string Value)
-{
-    public static TaskItemStatus Pending => new("Pending");
-    public static TaskItemStatus Started => new("Started");
-    public static TaskItemStatus Done => new("Done");
+public enum TaskItemStatus { Pending, Started, Done }
+// public record TaskItemStatus(string Value)
+// {
+//     public static TaskItemStatus Pending => new("Pending");
+//     public static TaskItemStatus Started => new("Started");
+//     public static TaskItemStatus Done => new("Done");
 
-    public override string ToString()
-    {
-        return Value;
-    }
-}
+//     public override string ToString()
+//     {
+//         return Value;
+//     }
+// }
 
 public class Recurrence
 {

@@ -16,3 +16,4 @@ public record Tag(TagOperator Modifier, string Value) : Expr;
 public enum TagOperator { Include, Exclude }
 public enum BinaryOperator { And, Or }
 public record CommandExpression(IEnumerable<Expr> Children, string Input) : Expr;
+public record FilterExpression(Expr Expr) : Expr;

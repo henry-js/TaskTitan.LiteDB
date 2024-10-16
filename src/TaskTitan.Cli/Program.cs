@@ -13,18 +13,24 @@ using TaskTitan.Data;
 
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Debug()
-            // .WriteTo.File("logs/startup_.log",
-            // outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
-            // rollingInterval: RollingInterval.Day
-            // )
-            // .Enrich.WithProperty("Application Name", "<APP NAME>");
-            .WriteTo.Console();
+            .WriteTo.File("logs/startup_.log",
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
+            rollingInterval: RollingInterval.Day
+            )
+            .Enrich.WithProperty("Application Name", "<APP NAME>");
 Log.Logger = loggerConfiguration.CreateBootstrapLogger();
 
+var rootCommand = new RootCommand();
+rootCommand.AddGlobalOption(GlobalOptions.FilterOption);
+rootCommand.SetHandler((context) =>
+{
+    var argVal = context;
+    Console.WriteLine(argVal);
+    Console.WriteLine("HELLLOOOOOOOOOOOOOOOOOOOOOO");
+}, GlobalOptions.FilterOption);
 
-var rootCommand = new RootCommand("root");
+
 rootCommand.AddCommand(new AddCommand());
-
 
 var cmdLine = new CommandLineBuilder(rootCommand)
     .UseHost(_ => Host.CreateDefaultBuilder(args), builder =>
@@ -38,9 +44,14 @@ var cmdLine = new CommandLineBuilder(rootCommand)
                 services.AddSingleton(_ => AnsiConsole.Console);
                 services.AddTransient(f => new LiteDbContext(context.Configuration.GetConnectionString("TempDb") ?? throw new NullReferenceException()));
             })
+            .UseConsoleLifetime()
             .UseProjectCommandHandlers()
             .UseSerilog((context, services, configuration) =>
                 configuration.ReadFrom.Configuration(context.Configuration));
+    })
+    .AddMiddleware(async (context, next) =>
+    {
+
     })
     .UseDefaults()
     // .UseExceptionHandler((ex, context) =>

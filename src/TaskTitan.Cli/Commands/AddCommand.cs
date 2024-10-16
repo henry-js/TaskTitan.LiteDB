@@ -9,14 +9,31 @@ using TaskTitan.Data;
 
 namespace TaskTitan.Cli.Commands;
 
-public sealed class AddCommand : Command
+// public sealed class TaskCommand : RootCommand
+// {
+//     public TaskCommand() : base("The tasktitan cli")
+//     {
+//         this.AddArgument(GlobalOptions.FilterArgument);
+//     }
+//     new public class Handler(IAnsiConsole console, ILogger<TaskCommand> logger, LiteDbContext dbContext) : ICommandHandler
+//     {
+//         public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
+
+//         public Task<int> InvokeAsync(InvocationContext context)
+//         {
+//             return Task.FromResult(1);
+//         }
+//     }
+// }
+
+public sealed class AddCommand : CliCommand
 {
     public AddCommand() : base("add", "Add a task to the list")
     {
         AddOptions(this);
     }
 
-    public static void AddOptions(Command command)
+    public static void AddOptions(CliCommand command)
     {
         var descriptionArgument = new Argument<string>("description"
         , parse: ar => string.Join(' ', ar.Tokens)
@@ -24,12 +41,9 @@ public sealed class AddCommand : Command
         {
             Arity = ArgumentArity.OneOrMore,
         };
-        command.AddArgument(descriptionArgument);
+        command.Add(descriptionArgument);
 
-        var modificationOption = new Option<CommandExpression?>(
-            aliases: ["-m", "--modify"],
-            parseArgument: ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
-            description: "Due date etc")
+        var modificationOption = new CliOption<CommandExpression?>("modify", ["-m", "--modify"])
         {
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
@@ -41,10 +55,7 @@ public sealed class AddCommand : Command
     {
         public required string Description { get; set; }
         public CommandExpression? Modify { get; set; }
-        public int Invoke(InvocationContext context)
-        {
-            return InvokeAsync(context).Result;
-        }
+        public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
 
         public async Task<int> InvokeAsync(InvocationContext context)
         {
@@ -53,10 +64,7 @@ public sealed class AddCommand : Command
             var orderedTasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid)
                 .FindAll()
                 .Select((item, index) => item.RowId = index);
-            var task = new TaskItem
-            {
-                Description = Description
-            };
+            var task = new TaskItem(Description);
 
             tasks.Insert(task);
 

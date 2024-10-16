@@ -88,11 +88,10 @@ public static class ExpressionParser
             ]
         );
 
-    public static Result<char, Expr> Parse(string input)
-        => _filtExpr.Parse(input);
-
-    public static Expr ParseFilterExpression(string input)
-        => _filtExpr.ParseOrThrow(input);
+    public static FilterExpression ParseFilter(string input)
+        => _filtExpr
+            .Select(expr => new FilterExpression(expr))
+            .ParseOrThrow(input);
     public static CommandExpression ParseCommand(string input)
         => OneOf(
             _attributePair,
