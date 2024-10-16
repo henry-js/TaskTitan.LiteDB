@@ -14,7 +14,7 @@ public class CommandTests
         string description = "i am a description argument";
         var result = command.Parse(description);
         var argRes = result.CommandResult.Children[0] as ArgumentResult;
-        var value = result.GetValueForArgument(argRes.Argument) as string;
+        var value = result.GetValueForArgument(argRes!.Argument) as string;
         await Assert.That(value).IsEqualTo(description);
     }
 
@@ -30,8 +30,8 @@ public class CommandTests
 
         var optRes = result.CommandResult.Children[^1] as OptionResult;
 
-        var value = result.GetValueForOption(optRes.Option) as CommandExpression;
+        var value = result.GetValueForOption(optRes!.Option) as CommandExpression;
 
-        await Assert.That(value.Input).IsEqualTo(expected);
+        await Assert.That(value!.Input).IsEqualTo(expected);
     }
 }

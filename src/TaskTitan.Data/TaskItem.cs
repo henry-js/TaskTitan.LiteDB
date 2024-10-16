@@ -8,14 +8,13 @@ public class TaskItem
     public int RowId { get; set; }
     public string Description { get; set; }
     public string Depends { get; set; }
-    public string Estimate { get; set; }
     public DateTime? Due { get; set; }
     public DateTime? End { get; set; }
     public DateTime? Entry { get; set; }
     public DateTime? Modified { get; set; }
     public Guid? Parent { get; set; }
     public string? Project { get; set; }
-    public Recurrence Recur { get; set; }
+    public Recurrence? Recur { get; set; }
     public DateTime? Scheduled { get; set; }
     public DateTime? Start { get; set; }
     public TaskItemStatus Status { get; set; } = TaskItemStatus.Pending;

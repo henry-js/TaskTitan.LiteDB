@@ -36,7 +36,7 @@ var cmdLine = new CommandLineBuilder(rootCommand)
             .ConfigureServices((context, services) =>
             {
                 services.AddSingleton(_ => AnsiConsole.Console);
-                services.AddTransient(f => new LiteDbContext(context.Configuration.GetConnectionString("TempDb")));
+                services.AddTransient(f => new LiteDbContext(context.Configuration.GetConnectionString("TempDb") ?? throw new NullReferenceException()));
             })
             .UseProjectCommandHandlers()
             .UseSerilog((context, services, configuration) =>
