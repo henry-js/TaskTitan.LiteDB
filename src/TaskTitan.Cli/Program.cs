@@ -20,19 +20,11 @@ var loggerConfiguration = new LoggerConfiguration()
             .Enrich.WithProperty("Application Name", "<APP NAME>");
 Log.Logger = loggerConfiguration.CreateBootstrapLogger();
 
-var rootCommand = new RootCommand();
-rootCommand.AddGlobalOption(GlobalOptions.FilterOption);
-rootCommand.SetHandler((context) =>
-{
-    var argVal = context;
-    Console.WriteLine(argVal);
-    Console.WriteLine("HELLLOOOOOOOOOOOOOOOOOOOOOO");
-}, GlobalOptions.FilterOption);
+var cmd = new CliRootCommand();
 
+cmd.Add(new AddCommand().UseCommandHandler<AddCommand.Handler>());
 
-rootCommand.AddCommand(new AddCommand());
-
-var cmdLine = new CommandLineBuilder(rootCommand)
+var cmdLine = new CliConfiguration(cmd)
     .UseHost(_ => Host.CreateDefaultBuilder(args), builder =>
     {
         builder.ConfigureAppConfiguration(config =>
@@ -45,15 +37,11 @@ var cmdLine = new CommandLineBuilder(rootCommand)
                 services.AddTransient(f => new LiteDbContext(context.Configuration.GetConnectionString("TempDb") ?? throw new NullReferenceException()));
             })
             .UseConsoleLifetime()
-            .UseProjectCommandHandlers()
+            .UseInvocationLifetime()
             .UseSerilog((context, services, configuration) =>
                 configuration.ReadFrom.Configuration(context.Configuration));
     })
-    .AddMiddleware(async (context, next) =>
-    {
 
-    })
-    .UseDefaults()
     // .UseExceptionHandler((ex, context) =>
     // {
     //     AnsiConsole.WriteException(ex, ExceptionFormats.Default);

@@ -35,12 +35,12 @@ public sealed class AddCommand : CliCommand
 
     public static void AddOptions(CliCommand command)
     {
-        var descriptionArgument = new Argument<string>("description"
-        , parse: ar => string.Join(' ', ar.Tokens)
-        )
+        var descriptionArgument = new CliArgument<string>("description")
         {
             Arity = ArgumentArity.OneOrMore,
+            CustomParser = ar => string.Join(' ', ar.Tokens)
         };
+
         command.Add(descriptionArgument);
 
         var modificationOption = new CliOption<CommandExpression?>("modify", ["-m", "--modify"])
@@ -48,16 +48,14 @@ public sealed class AddCommand : CliCommand
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
         };
-        command.AddOption(modificationOption);
+        command.Add(modificationOption);
     }
 
-    new public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : ICommandHandler
+    public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : AsynchronousCliAction
     {
         public required string Description { get; set; }
         public CommandExpression? Modify { get; set; }
-        public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
-
-        public async Task<int> InvokeAsync(InvocationContext context)
+        public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
             var config = new DefaultConfiguration();
             var tasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid);

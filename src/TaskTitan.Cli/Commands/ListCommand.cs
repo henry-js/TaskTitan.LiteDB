@@ -5,25 +5,21 @@ using System.CommandLine.Invocation;
 
 namespace MyProjectNamespace;
 
-internal sealed class ListCommand : Command
+internal sealed class ListCommand : CliCommand
 {
     public ListCommand() : base("list", "Add a task to the list")
     {
         AddOptions(this);
     }
 
-    public static void AddOptions(Command command)
+    public static void AddOptions(CliCommand command)
     {
     }
 
-    new public class Handler(IAnsiConsole console, ILogger<ListCommand> logger) : ICommandHandler
+    new public class Handler(IAnsiConsole console, ILogger<ListCommand> logger) : AsynchronousCliAction
     {
-        public int Invoke(InvocationContext context)
-        {
-            return InvokeAsync(context).Result;
-        }
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
             return 0;
         }

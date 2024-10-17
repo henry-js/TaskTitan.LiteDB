@@ -3,20 +3,18 @@ using TaskTitan.Cli.Utils;
 
 public static class GlobalOptions
 {
-    public static readonly Option<CommandExpression?> ModificationOption = new(
-        aliases: ["-m", "--modify"],
-        parseArgument: ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
-        description: "Due date etc")
+    public static readonly CliOption<CommandExpression?> ModificationOption = new("--modify", ["-m"])
     {
+        Description = "Due date etc",
+        CustomParser = ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
         AllowMultipleArgumentsPerToken = true,
         Arity = ArgumentArity.OneOrMore
     };
 
-    public static readonly Option<FilterExpression> FilterOption = new(
-        aliases: ["-f", "--filter"],
-        parseArgument: ar => ExpressionParser.ParseFilter(string.Join(' ', ar.Tokens)),
-        description: "Filter tasks by")
+    public static readonly CliOption<FilterExpression> FilterOption = new("--filter", ["-f"])
     {
+        Description = "Filter tasks by",
+        CustomParser = ar => ExpressionParser.ParseFilter(string.Join(' ', ar.Tokens)),
         AllowMultipleArgumentsPerToken = true,
         Arity = ArgumentArity.ZeroOrMore
     };
