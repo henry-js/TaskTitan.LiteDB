@@ -3,11 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Spectre.Console;
 using System.CommandLine;
-using System.CommandLine.Builder;
 using System.CommandLine.Hosting;
-using System.CommandLine.Parsing;
 using Microsoft.Extensions.Configuration;
-using TaskTitan.Cli.Extensions;
 using TaskTitan.Cli.Commands;
 using TaskTitan.Data;
 
@@ -21,6 +18,14 @@ var loggerConfiguration = new LoggerConfiguration()
 Log.Logger = loggerConfiguration.CreateBootstrapLogger();
 
 var cmd = new CliRootCommand();
+cmd.Add(GlobalOptions.FilterOption);
+cmd.UseCommandHandler<ListCommand.Handler>();
+// cmd.SetHandler((context) =>
+// {
+//     var argVal = context;
+//     Console.WriteLine(argVal);
+//     Console.WriteLine("HELLLOOOOOOOOOOOOOOOOOOOOOO");
+// }, GlobalOptions.FilterOption);
 
 cmd.Add(new AddCommand().UseCommandHandler<AddCommand.Handler>());
 
@@ -40,15 +45,8 @@ var cmdLine = new CliConfiguration(cmd)
             .UseInvocationLifetime()
             .UseSerilog((context, services, configuration) =>
                 configuration.ReadFrom.Configuration(context.Configuration));
-    })
-
-    // .UseExceptionHandler((ex, context) =>
-    // {
-    //     AnsiConsole.WriteException(ex, ExceptionFormats.Default);
-    //     Log.Fatal(ex, "Application terminated unexpectedly");
-    // })
-    .Build();
-
+    });
+cmdLine.Parse(args);
 int result = await cmdLine.InvokeAsync(args);
 
 return result;

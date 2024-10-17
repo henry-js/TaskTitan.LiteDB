@@ -3,7 +3,7 @@ using Spectre.Console;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 
-namespace MyProjectNamespace;
+namespace TaskTitan.Cli.Commands;
 
 internal sealed class ListCommand : CliCommand
 {
@@ -21,7 +21,7 @@ internal sealed class ListCommand : CliCommand
 
         public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
-            return 0;
+            throw new NotImplementedException();
         }
     }
 }

@@ -37,24 +37,26 @@ public sealed class AddCommand : CliCommand
     {
         var descriptionArgument = new CliArgument<string>("description")
         {
+            CustomParser = ar => string.Join(' ', ar.Tokens),
             Arity = ArgumentArity.OneOrMore,
-            CustomParser = ar => string.Join(' ', ar.Tokens)
         };
 
         command.Add(descriptionArgument);
 
         var modificationOption = new CliOption<CommandExpression?>("modify", ["-m", "--modify"])
         {
+            CustomParser = ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
         };
         command.Add(modificationOption);
     }
 
-    public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : AsynchronousCliAction
+    new public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : AsynchronousCliAction
     {
         public required string Description { get; set; }
         public CommandExpression? Modify { get; set; }
+
         public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
             var config = new DefaultConfiguration();

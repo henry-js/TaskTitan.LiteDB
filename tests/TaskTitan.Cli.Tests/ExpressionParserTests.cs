@@ -35,7 +35,7 @@ public class PidginParserTests
         var result = ExpressionParser.ParseFilter(text);
 
         // await Assert.That(result.Success).IsTrue();
-        await Assert.That(result).IsAssignableTo(typeof(BinaryFilter));
+        await Assert.That(result.Expr).IsAssignableTo(typeof(BinaryFilter));
 
         var resultVal = result.Expr as BinaryFilter;
         await Assert.That(resultVal?.Operator).IsEquivalentTo(@operator);
@@ -48,7 +48,7 @@ public class PidginParserTests
     {
         var result = ExpressionParser.ParseFilter(tagText);
 
-        await Assert.That(result).IsAssignableTo(typeof(Tag));
+        await Assert.That(result.Expr).IsAssignableTo(typeof(Tag));
         var tag = result.Expr as Tag;
         await Assert.That(tag?.Modifier).IsEqualTo(modifier);
     }
@@ -61,7 +61,7 @@ public class PidginParserTests
     {
         var result = ExpressionParser.ParseFilter(text);
 
-        await Assert.That(result).IsAssignableTo(t);
+        await Assert.That(result.Expr).IsAssignableTo(t);
     }
 
     [Test]

@@ -16,6 +16,7 @@ public static class GlobalOptions
         Description = "Filter tasks by",
         CustomParser = ar => ExpressionParser.ParseFilter(string.Join(' ', ar.Tokens)),
         AllowMultipleArgumentsPerToken = true,
-        Arity = ArgumentArity.ZeroOrMore
+        Arity = ArgumentArity.ZeroOrMore,
+        Recursive = true,
     };
 }

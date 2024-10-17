@@ -13,8 +13,9 @@ public class CommandTests
         var command = new AddCommand();
         string description = "i am a description argument";
         var result = command.Parse(description);
-        var argRes = result.CommandResult.Children[0] as ArgumentResult;
-        var value = result.GetValueForArgument(argRes!.Argument) as string;
+        var arg = result.CommandResult.Command.Arguments.First() as CliArgument<string>;
+        var value = result.GetValue<string>(arg);
+
         await Assert.That(value).IsEqualTo(description);
     }
 
@@ -28,9 +29,9 @@ public class CommandTests
         string[] input = ["description placeholder", .. modifyText];
         var result = command.Parse(input);
 
-        var optRes = result.CommandResult.Children[^1] as OptionResult;
+        var opt = result.CommandResult.Command.Options.First() as CliOption<CommandExpression>;
 
-        var value = result.GetValueForOption(optRes!.Option) as CommandExpression;
+        var value = result.GetValue(opt!);
 
         await Assert.That(value!.Input).IsEqualTo(expected);
     }
