@@ -40,4 +40,21 @@ public static class Enums
         Indented,
         Duration
     }
+
+    public enum ColModifier
+    {
+        Not,
+        Before, Below,
+        After, Above,
+        None,
+        Any,
+        Is, Equals,
+        Isnt,
+        Has, Contains,
+        Hasnt,
+        Startswith, Left,
+        Endswith, Right,
+        Word,
+        Noword,
+    }
 }

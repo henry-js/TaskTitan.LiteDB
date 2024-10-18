@@ -1,4 +1,4 @@
-using static TaskTitan.Data.Enums;
+using TaskTitan.Data.Reports;
 using static TaskTitan.Data.Enums.ColFormat;
 using static TaskTitan.Data.Enums.ColType;
 
@@ -6,6 +6,17 @@ namespace TaskTitan.Data;
 
 public class DefaultConfiguration
 {
+    public Dictionary<string, CustomReport> Reports { get; set; } = new()
+{
+    { "all", new CustomReport()
+        {
+            Name = "all",
+            Description = "All tasks",
+            Labels = ["ID","St","UUID","A","Age","Done","D","P","Project","Tags","Recur","W","Sch","Due","Until","Description"],
+            Columns = ["id","status.short","uuid.short","start.active","entry.age","end.age","depends.indicator","priority","project.parent","tags.count","recur.indicator","wait.remaining","scheduled.remaining","due","until.remaining","description"],
+        }
+    },
+};
     public Dictionary<string, ColumnConfig> Columns { get; set; } = new(){
 
         {"depends", new ColumnConfig("depends",true, List,Text,  [Standard,Indicator,List] )},

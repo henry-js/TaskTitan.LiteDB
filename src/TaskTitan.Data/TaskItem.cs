@@ -67,14 +67,21 @@ public class ColumnConfig
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ColType ColType { get; set; }
     public IReadOnlyList<ColFormat>? AllowedFormats { get; }
+    public HashSet<ColModifier> AllowedModifiers { get; }
 
-    public ColumnConfig(string name, bool IsModifiable, ColFormat format, ColType type, List<ColFormat>? allowedFormats = null)
+    public ColumnConfig(string name, bool isModifiable, ColFormat format, ColType type, List<ColFormat>? allowedFormats = null)
     {
         Name = name;
-        this.IsModifiable = IsModifiable;
+        IsModifiable = isModifiable;
         Format = format;
         ColType = type;
         AllowedFormats = allowedFormats ?? ColumnTypeFormats.AllowedFormats[type];
+        AllowedModifiers = ColType switch
+        {
+            ColType.Date => [ColModifier.None, ColModifier.Not, ColModifier.Before, ColModifier.After, ColModifier.Is],
+            ColType.Text => [ColModifier.None, ColModifier.Any, ColModifier.Is, ColModifier.Not, ColModifier.Has, ColModifier.Hasnt, ColModifier.Startswith, ColModifier.Endswith],
+            ColType.Number => [ColModifier.None, ColModifier.Any, ColModifier.Below, ColModifier.Above, ColModifier.Is, ColModifier.Not]
+        };
     }
 
     public void SetFormat(ColFormat format)

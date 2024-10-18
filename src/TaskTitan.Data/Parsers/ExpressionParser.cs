@@ -1,10 +1,11 @@
 using Pidgin;
 using Pidgin.Expression;
+using TaskTitan.Data.Expressions;
 using static Pidgin.Parser<char>;
 using static Pidgin.Parser<string>;
 using static Pidgin.Parser;
 
-namespace TaskTitan.Cli.Utils;
+namespace TaskTitan.Data.Parsers;
 
 public static class ExpressionParser
 {
@@ -44,16 +45,18 @@ public static class ExpressionParser
             _dash,
             _colon
         ).ManyString();
+
+    // FIX: might be broken, make sure working with key modifiers
     private static readonly Parser<char, Key> _builtInAttribute
         = OneOf(
         Constants.BuiltInKeys.Select(k => String(k))
         )
-        .Select(a => new BuiltInAttributeKey(a))
+        .Select(a => new BuiltInAttributeKey(a.Split('.')))
         .Cast<Key>();
     private static readonly Parser<char, Key> _udaAttribute
         = Letter
             .AtLeastOnceString()
-            .Select(s => new UserDefinedAttributeKey(s))
+            .Select(s => new UserDefinedAttributeKey(s.Split('.')))
             .Cast<Key>();
     internal static readonly Parser<char, Key> _attributePairKey
         = OneOf(

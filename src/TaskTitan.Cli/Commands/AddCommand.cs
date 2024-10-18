@@ -2,29 +2,12 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using Spectre.Console;
-using TaskTitan.Cli.Utils;
 using TaskTitan.Data;
+using TaskTitan.Data.Expressions;
+using TaskTitan.Data.Parsers;
 
 namespace TaskTitan.Cli.Commands;
-
-// public sealed class TaskCommand : RootCommand
-// {
-//     public TaskCommand() : base("The tasktitan cli")
-//     {
-//         this.AddArgument(GlobalOptions.FilterArgument);
-//     }
-//     new public class Handler(IAnsiConsole console, ILogger<TaskCommand> logger, LiteDbContext dbContext) : ICommandHandler
-//     {
-//         public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
-
-//         public Task<int> InvokeAsync(InvocationContext context)
-//         {
-//             return Task.FromResult(1);
-//         }
-//     }
-// }
 
 public sealed class AddCommand : CliCommand
 {

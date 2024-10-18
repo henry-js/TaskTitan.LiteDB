@@ -1,7 +1,7 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Parsing;
+using TaskTitan.Data.Expressions;
 using TaskTitan.Cli.Commands;
-using TaskTitan.Cli.Utils;
 
 namespace TaskTitan.Cli.Tests;
 

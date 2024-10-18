@@ -1,5 +1,7 @@
 using TUnit.Assertions.Extensions.Generic;
-using TaskTitan.Cli.Utils;
+using TaskTitan.Data.Parsers;
+using TaskTitan.Data.Expressions;
+using System.Text.Json;
 
 namespace TaskTitan.Cli.Tests;
 
@@ -57,10 +59,11 @@ public class PidginParserTests
     [Arguments("due:tomorrow", typeof(AttributePair))]
     [Arguments("+test or due:tomorrow", typeof(BinaryFilter))]
     [Arguments("due:tomorrow or project:home", typeof(BinaryFilter))]
+    [Arguments("project:work and until:1w or due:monday", typeof(BinaryFilter))]
     public async Task DifferentExpressionsCanBeParsedFromText(string text, Type t)
     {
         var result = ExpressionParser.ParseFilter(text);
-
+        var json = JsonSerializer.Serialize(result, new JsonSerializerOptions() { WriteIndented = true });
         await Assert.That(result.Expr).IsAssignableTo(t);
     }
 
