@@ -55,6 +55,7 @@ public static class Enums
         Startswith, Left,
         Endswith, Right,
         Word,
-        Noword,
+        Noword
+
     }
 }

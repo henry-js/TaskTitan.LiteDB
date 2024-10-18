@@ -51,12 +51,12 @@ public static class ExpressionParser
         = OneOf(
         Constants.BuiltInKeys.Select(k => String(k))
         )
-        .Select(a => new BuiltInAttributeKey(a.Split('.')))
+        .Select(a => new BuiltInAttributeKey(a))
         .Cast<Key>();
     private static readonly Parser<char, Key> _udaAttribute
         = Letter
             .AtLeastOnceString()
-            .Select(s => new UserDefinedAttributeKey(s.Split('.')))
+            .Select(s => new UserDefinedAttributeKey(s))
             .Cast<Key>();
     internal static readonly Parser<char, Key> _attributePairKey
         = OneOf(

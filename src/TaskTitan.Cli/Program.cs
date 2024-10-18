@@ -7,6 +7,7 @@ using System.CommandLine.Hosting;
 using Microsoft.Extensions.Configuration;
 using TaskTitan.Cli.Commands;
 using TaskTitan.Data;
+using System.Text.Json;
 
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -20,12 +21,6 @@ Log.Logger = loggerConfiguration.CreateBootstrapLogger();
 var cmd = new CliRootCommand();
 cmd.Add(GlobalOptions.FilterOption);
 cmd.UseCommandHandler<ListCommand.Handler>();
-// cmd.SetHandler((context) =>
-// {
-//     var argVal = context;
-//     Console.WriteLine(argVal);
-//     Console.WriteLine("HELLLOOOOOOOOOOOOOOOOOOOOOO");
-// }, GlobalOptions.FilterOption);
 
 cmd.Add(new AddCommand().UseCommandHandler<AddCommand.Handler>());
 

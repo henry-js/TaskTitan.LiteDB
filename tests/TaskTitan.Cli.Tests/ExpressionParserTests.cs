@@ -16,16 +16,17 @@ public class PidginParserTests
     [Arguments("due:'i am a quoted string'", "due", "i am a quoted string")]
     [Arguments("uda:'i am a UDA'", "uda", "i am a UDA")]
 
-    public async Task AnAttributePairCanBeParsedFromText(string text, string key, string value)
+    public async Task AnAttributePairCanBeParsedFromText(string text, string keyText, string value)
     {
         var result = ExpressionParser.ParseFilter(text);
 
-        await Assert.That((result.Expr as AttributePair)?.Key)
-        .IsEquivalentTo(new BuiltInAttributeKey(key))
-        .Or
-        .IsEquivalentTo(new UserDefinedAttributeKey(key));
-    }
 
+        AttributePair attribute = (result.Expr as AttributePair)!;
+
+        await Assert.That(attribute.Key.Name).IsEqualTo(keyText);
+        await Assert.That(attribute.Key.Modifier).IsNull();
+        await Assert.That(attribute.Value).IsEqualTo(value);
+    }
 
     [Test]
     [Arguments("due:8w and until:7w", BinaryOperator.And)]

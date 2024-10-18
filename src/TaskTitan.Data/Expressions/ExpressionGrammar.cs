@@ -8,9 +8,29 @@ public static class Constants
 
 }
 
-public abstract record Key(string[] Name);
-public record BuiltInAttributeKey(string[] Name) : Key(Name);
-public record UserDefinedAttributeKey(string[] Name) : Key(Name);
+public abstract record Key
+{
+    public Key(string name)
+    {
+        var values = name.Split('.');
+        if (values.Length > 2 || values.Length == 0) throw new Exception();
+
+        Name = values[0];
+
+        if (values.Length == 1) return;
+
+
+        if (Enum.TryParse(Name, true, out ColModifier modifier))
+        {
+            Modifier = modifier;
+        }
+    }
+
+    public string Name { get; }
+    public ColModifier? Modifier { get; }
+}
+public record BuiltInAttributeKey(string name) : Key(name);
+public record UserDefinedAttributeKey(string name) : Key(name);
 public record AttributePair(Key Key, string Value) : Expr;
 public abstract record Expr;
 public record BinaryFilter(Expr Left, BinaryOperator Operator, Expr Right) : Expr;

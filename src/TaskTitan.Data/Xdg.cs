@@ -13,8 +13,8 @@ public static class Xdg
         _stateHome = Environment.GetEnvironmentVariable("XDG_STATE_HOME", EnvironmentVariableTarget.User);
     }
 
-    public static string? DATA_HOME => _dataHome;
-    public static string? CONFIG_HOME => _configHome;
-    public static string? STATE_HOME => _stateHome;
+    public static string? DATA_HOME => _dataHome is null ? null : Path.Combine(_dataHome, ".tasktitan", @"\");
+    public static string? CONFIG_HOME => _configHome is null ? null : Path.Combine(_configHome, ".tasktitan", @"\");
+    public static string? STATE_HOME => _stateHome is null ? null : Path.Combine(_stateHome, ".tasktitan", @"\");
 
 }
