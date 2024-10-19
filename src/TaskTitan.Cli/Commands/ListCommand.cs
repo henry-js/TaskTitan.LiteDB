@@ -22,6 +22,8 @@ internal sealed class ListCommand : CliCommand
         public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
             // var tasks = await context.GetAllTasks();
+
+
             return await Task.FromResult(1);
 
             throw new NotImplementedException();

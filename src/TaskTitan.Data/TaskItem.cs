@@ -20,7 +20,7 @@ public class TaskItem
     public int[] Depends { get; set; } = [];
     public DateTime? Due { get; set; }
     public DateTime? End { get; set; }
-    public DateTime? Entry { get; set; }
+    public DateTime? Entry { get; set; } = DateTime.UtcNow;
     public DateTime? Modified { get; set; }
     public Guid? Parent { get; set; }
     public string? Project { get; set; }
@@ -80,7 +80,8 @@ public class ColumnConfig
         {
             ColType.Date => [ColModifier.None, ColModifier.Not, ColModifier.Before, ColModifier.After, ColModifier.Is],
             ColType.Text => [ColModifier.None, ColModifier.Any, ColModifier.Is, ColModifier.Not, ColModifier.Has, ColModifier.Hasnt, ColModifier.Startswith, ColModifier.Endswith],
-            ColType.Number => [ColModifier.None, ColModifier.Any, ColModifier.Below, ColModifier.Above, ColModifier.Is, ColModifier.Not]
+            ColType.Number => [ColModifier.None, ColModifier.Any, ColModifier.Below, ColModifier.Above, ColModifier.Is, ColModifier.Not],
+            _ => throw new SwitchExpressionException(type)
         };
     }
 

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace TaskTitan.Data.Parsers;
 
@@ -34,7 +35,8 @@ public class DateParser
             "eom" => EndOfMonth(),
             "sow" => Prev(DayOfWeek.Monday),
             "eow" => Next(DayOfWeek.Sunday),
-            string day when IsDayOfWeek(day) => NextDayOfWeek(day)
+            string day when IsDayOfWeek(day) => NextDayOfWeek(day),
+            _ => throw new SwitchExpressionException(input)
         };
         return DateTime.SpecifyKind(dt, DateTimeKind.Local);
 

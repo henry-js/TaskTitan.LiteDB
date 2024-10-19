@@ -35,7 +35,7 @@ public sealed class AddCommand : CliCommand
         command.Add(modificationOption);
     }
 
-    new public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : AsynchronousCliAction
+    public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : AsynchronousCliAction
     {
         public required string Description { get; set; }
         public CommandExpression? Modify { get; set; }
