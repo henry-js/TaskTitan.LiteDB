@@ -1,9 +1,11 @@
-﻿using LiteDB;
+﻿using System.Reflection.Metadata;
+using LiteDB;
 
 namespace TaskTitan.Data;
 
 public class LiteDbContext
 {
+    public const string FILE_NAME = "tasktitan.db";
     public readonly LiteDatabase db;
     public LiteDbContext(string connectionString)
     {
@@ -15,7 +17,12 @@ public class LiteDbContext
         }
         catch (Exception ex)
         {
-            throw new Exception("Can find or create LiteDb database.", ex);
+            throw new Exception("Can't find or create LiteDb database.", ex);
         }
+    }
+
+    public static string CreateConnectionStringFrom(string dataDirectoryPath)
+    {
+        return $@"Filename={Path.Combine(dataDirectoryPath, FILE_NAME)}";
     }
 }

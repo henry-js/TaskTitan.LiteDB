@@ -1,14 +1,15 @@
-﻿using System.Linq.Expressions;
-using System.Text.Json;
-using TaskTitan.Data;
+﻿using TaskTitan.Configuration;
 using TaskTitan.Data.Reports;
 using Tomlyn;
 
 var config = new DefaultConfiguration();
 var reports = config.Reports;
 
-File.WriteAllText(@"C:\temp\tasktitan-reports.json", JsonSerializer.Serialize(reports, new JsonSerializerOptions() { WriteIndented = true }));
-
-File.WriteAllText(@"C:\temp\tasktitan-reports.toml", Toml.FromModel(reports));
-// var reports = Toml.ToModel<ReportDictionary>(File.ReadAllText(@"C:\temp\tasktitan-reports.toml"));
+File.WriteAllText(Path.Combine(Global.ConfigDirectoryPath, "reports.toml"), Toml.FromModel(reports));
+reports = Toml.ToModel<ReportDictionary>(File.ReadAllText(Path.Combine(Global.ConfigDirectoryPath, "reports.toml")));
 // Console.WriteLine($"{reports.Count} reports loaded");
+
+
+Console.WriteLine($"Data path: {Global.DataDirectoryPath}");
+Console.WriteLine($"Config path: {Global.ConfigDirectoryPath}");
+Console.WriteLine($"State path: {Global.StateDirectoryPath}");

@@ -1,8 +1,10 @@
 using System.CommandLine;
+using System.CommandLine.Hosting;
 using System.CommandLine.Invocation;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
+using TaskTitan.Configuration;
 using TaskTitan.Data;
 using TaskTitan.Data.Expressions;
 using TaskTitan.Data.Parsers;
@@ -14,6 +16,7 @@ public sealed class AddCommand : CliCommand
     public AddCommand() : base("add", "Add a task to the list")
     {
         AddOptions(this);
+        this.UseCommandHandler<Handler>();
     }
 
     public static void AddOptions(CliCommand command)
@@ -35,7 +38,7 @@ public sealed class AddCommand : CliCommand
         command.Add(modificationOption);
     }
 
-    public class Handler(IAnsiConsole console, ILogger<AddCommand> logger, LiteDbContext dbContext) : AsynchronousCliAction
+    public class Handler(IAnsiConsole console, LiteDbContext dbContext) : AsynchronousCliAction
     {
         public required string Description { get; set; }
         public CommandExpression? Modify { get; set; }

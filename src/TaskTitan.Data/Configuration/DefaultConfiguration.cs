@@ -1,11 +1,15 @@
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using TaskTitan.Data;
 using TaskTitan.Data.Reports;
 using static TaskTitan.Data.Enums.ColFormat;
 using static TaskTitan.Data.Enums.ColType;
 
-namespace TaskTitan.Data;
+namespace TaskTitan.Configuration;
 
 public class DefaultConfiguration
 {
+    [DataMember(Name = "Report")]
     public ReportDictionary Reports { get; set; } = new()
     {
         ["active"] = new CustomReport("active")
@@ -130,24 +134,26 @@ public class DefaultConfiguration
     public DefaultConfiguration()
     {
     }
-    public Dictionary<string, ColumnConfig> Columns { get; set; } = new(){
 
-        {"depends", new ColumnConfig("depends",true, List,Text,  [Standard,Indicator,List] )},
-        {"description", new ColumnConfig("description",true, Standard,Text,  [Combined,Desc,Oneline,Truncated, Count, TruncatedCount] )},
-        {"due", new ColumnConfig("due",true, Formatted,Date)},
-        {"end", new ColumnConfig("end",true, Formatted,Date )},
-        {"entry", new ColumnConfig("entry",true, Formatted,Date )},
-        {"estimate", new ColumnConfig("estimate",true, Standard,Text,  [Standard,Indicator] )},
-        {"modified", new ColumnConfig("modified",true, Formatted,Date )},
-        {"parent", new ColumnConfig("parent",false, Long,Text ,[Long, Short])},
-        {"project", new ColumnConfig("project",false, Full,Text, [ Full, Parent, Indented ] )},
-        {"recur", new ColumnConfig("recur",false, Full,Text, [ Duration, Indicator ] )},
-        {"scheduled", new ColumnConfig("scheduled",true, Formatted,Date )},
-        {"start", new ColumnConfig("start",true, Formatted,Date )},
-        {"status", new ColumnConfig("status",true, Long, Text,[Long, Short] )},
-        {"tags", new ColumnConfig("tags",true, List, Text,[List,Indicator, Count] )},
-        {"until", new ColumnConfig("until",true, Formatted,Date )},
-        {"uuid", new ColumnConfig("uuid",false, Long,Text, [Long, Short] )},
-        {"wait", new ColumnConfig("wait",true, Standard,Date )},
+    [IgnoreDataMember]
+    public static Dictionary<string, AttributeColumnConfig> Columns => new(){
+
+        {"depends", new AttributeColumnConfig("depends",true, List,Text,  [Standard,Indicator,List] )},
+        {"description", new AttributeColumnConfig("description",true, Standard,Text,  [Combined,Desc,Oneline,Truncated, Count, TruncatedCount] )},
+        {"due", new AttributeColumnConfig("due",true, Formatted,Date)},
+        {"end", new AttributeColumnConfig("end",true, Formatted,Date )},
+        {"entry", new AttributeColumnConfig("entry",true, Formatted,Date )},
+        {"estimate", new AttributeColumnConfig("estimate",true, Standard,Text,  [Standard,Indicator] )},
+        {"modified", new AttributeColumnConfig("modified",true, Formatted,Date )},
+        {"parent", new AttributeColumnConfig("parent",false, Long,Text ,[Long, Short])},
+        {"project", new AttributeColumnConfig("project",false, Full,Text, [ Full, Parent, Indented ] )},
+        {"recur", new AttributeColumnConfig("recur",false, Full,Text, [ Duration, Indicator ] )},
+        {"scheduled", new AttributeColumnConfig("scheduled",true, Formatted,Date )},
+        {"start", new AttributeColumnConfig("start",true, Formatted,Date )},
+        {"status", new AttributeColumnConfig("status",true, Long, Text,[Long, Short] )},
+        {"tags", new AttributeColumnConfig("tags",true, List, Text,[List,Indicator, Count] )},
+        {"until", new AttributeColumnConfig("until",true, Formatted,Date )},
+        {"uuid", new AttributeColumnConfig("uuid",false, Long,Text, [Long, Short] )},
+        {"wait", new AttributeColumnConfig("wait",true, Standard,Date )},
     };
 }

@@ -1,3 +1,4 @@
+using Pidgin.Configuration;
 using static TaskTitan.Data.Enums;
 
 namespace TaskTitan.Data.Expressions;
@@ -51,11 +52,9 @@ public record Attribute : Expr
     }
     public static Attribute Create(string field, string value)
     {
-        var config = new DefaultConfiguration();
-
         var split = field.Split('.');
         field = split[0];
-        config.Columns.TryGetValue(field, out var col);
+        Configuration.DefaultConfiguration.Columns.TryGetValue(field, out var col);
         ColModifier? modifier = null;
         if (split.Length < 2) modifier = null;
         modifier = col?.AllowedModifiers.FirstOrDefault(m => m.ToString().Equals(split[1]));

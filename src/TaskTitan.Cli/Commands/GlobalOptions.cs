@@ -2,7 +2,9 @@ using System.CommandLine;
 using TaskTitan.Data.Expressions;
 using TaskTitan.Data.Parsers;
 
-public static class GlobalOptions
+namespace TaskTitan.Cli.Commands;
+
+public static class CliGlobalOptions
 {
     public static readonly CliOption<CommandExpression?> ModificationOption = new("--modify", ["-m"])
     {

@@ -17,16 +17,14 @@ internal sealed class ListCommand : CliCommand
     {
     }
 
-    public class Handler(IAnsiConsole console, ILogger<ListCommand> logger, LiteDbContext context) : AsynchronousCliAction
+    public class Handler(IAnsiConsole console, LiteDbContext context) : AsynchronousCliAction
     {
         public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
             // var tasks = await context.GetAllTasks();
-
+            console.WriteLine("Hello from list command");
 
             return await Task.FromResult(1);
-
-            throw new NotImplementedException();
         }
     }
 }

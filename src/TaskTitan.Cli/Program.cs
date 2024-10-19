@@ -7,41 +7,30 @@ using System.CommandLine.Hosting;
 using Microsoft.Extensions.Configuration;
 using TaskTitan.Cli.Commands;
 using TaskTitan.Data;
-using System.Text.Json;
+using TaskTitan.Cli.Logging;
+using TaskTitan.Configuration;
 
-var loggerConfiguration = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-            .WriteTo.File("logs/startup_.log",
-            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
-            rollingInterval: RollingInterval.Day
-            )
-            .Enrich.WithProperty("Application Name", "<APP NAME>");
-Log.Logger = loggerConfiguration.CreateBootstrapLogger();
+Global.CreateConfigurationDirectories();
 
 var cmd = new CliRootCommand();
-cmd.Add(GlobalOptions.FilterOption);
+cmd.Add(CliGlobalOptions.FilterOption);
 cmd.UseCommandHandler<ListCommand.Handler>();
 
-cmd.Add(new AddCommand().UseCommandHandler<AddCommand.Handler>());
+cmd.Add(new AddCommand());
 
 var cmdLine = new CliConfiguration(cmd)
     .UseHost(_ => Host.CreateDefaultBuilder(args), builder =>
     {
-        builder.ConfigureAppConfiguration(config =>
-        {
-            config.AddJsonFile("appsettings.json");
-        })
+        builder.ConfigureAppConfiguration(config => config.AddJsonFile("appsettings.json", false))
             .ConfigureServices((context, services) =>
             {
                 services.AddSingleton(_ => AnsiConsole.Console);
-                services.AddTransient(f => new LiteDbContext(context.Configuration.GetConnectionString("TempDb") ?? throw new NullReferenceException()));
+                services.AddTransient(f => new LiteDbContext(LiteDbContext.CreateConnectionStringFrom(Global.DataDirectoryPath)));
             })
             .UseConsoleLifetime()
-            .UseInvocationLifetime()
-            .UseSerilog((context, services, configuration) =>
-                configuration.ReadFrom.Configuration(context.Configuration));
+            .UseInvocationLifetime();
     });
-cmdLine.Parse(args);
+
 int result = await cmdLine.InvokeAsync(args);
 
 return result;
