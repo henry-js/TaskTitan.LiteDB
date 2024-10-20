@@ -28,7 +28,7 @@ public class TaskItem
     public DateTime? Until { get; set; }
     public double Urgency { get; set; }
     public DateTime? Wait { get; set; }
-    public Guid Id { get; set; } = Guid.CreateVersion7(DateTime.UtcNow);
+    public Guid Id { get; set; } = Guid.NewGuid();
 
 }
 

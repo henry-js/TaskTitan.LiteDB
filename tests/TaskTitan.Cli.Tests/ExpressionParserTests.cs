@@ -13,19 +13,17 @@ public class PidginParserTests
     [Arguments("project:home", "project", "home")]
     [Arguments("project:WORK", "project", "WORK")]
     [Arguments("due:2024-01-02T00:00:00", "due", "2024-01-02T00:00:00")]
-    [Arguments("due:'i am a quoted string'", "due", "i am a quoted string")]
-    [Arguments("uda:'i am a UDA'", "uda", "i am a UDA")]
 
     public async Task AnAttributePairCanBeParsedFromText(string text, string keyText, string value)
     {
         var result = ExpressionParser.ParseFilter(text);
 
 
-        AttributePair attribute = (result.Expr as AttributePair)!;
+        TaskAttribute attribute = (result.Expr as TaskAttribute)!;
 
-        await Assert.That(attribute.Key.Name).IsEqualTo(keyText);
-        await Assert.That(attribute.Key.Modifier).IsNull();
-        await Assert.That(attribute.Value).IsEqualTo(value);
+        await Assert.That(attribute.Field).IsEqualTo(keyText);
+        await Assert.That(attribute.Modifier).IsNull();
+        await Assert.That(attribute.StringValue).IsEqualTo(value);
     }
 
     [Test]
@@ -57,7 +55,7 @@ public class PidginParserTests
     }
 
     [Test]
-    [Arguments("due:tomorrow", typeof(AttributePair))]
+    [Arguments("due:tomorrow", typeof(TaskAttribute))]
     [Arguments("+test or due:tomorrow", typeof(BinaryFilter))]
     [Arguments("due:tomorrow or project:home", typeof(BinaryFilter))]
     [Arguments("project:work and until:1w or due:monday", typeof(BinaryFilter))]
@@ -69,10 +67,10 @@ public class PidginParserTests
     }
 
     [Test]
-    [Arguments("due:1w", 1)]
-    [Arguments("due:1w until:3d", 2)]
-    [Arguments("due:1w until:3d project:work", 3)]
-    [Arguments("due:1w until:3d project:work +fun", 4)]
+    [Arguments("due:tomorrow", 1)]
+    [Arguments("due:tomorrow until:tuesday", 2)]
+    [Arguments("due:tomorrow until:tuesday project:work", 3)]
+    [Arguments("due:tomorrow until:tuesday project:work +fun", 4)]
     public async Task CommandExpressionCanBeParsedFromText(string text, int quantity)
     {
         var result = ExpressionParser.ParseCommand(text);

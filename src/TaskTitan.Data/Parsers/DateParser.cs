@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
@@ -36,6 +37,7 @@ public class DateParser
             "sow" => Prev(DayOfWeek.Monday),
             "eow" => Next(DayOfWeek.Sunday),
             string day when IsDayOfWeek(day) => NextDayOfWeek(day),
+            string quantity when char.IsDigit(quantity[0]) => ToDateQuantity(quantity),
             _ => throw new SwitchExpressionException(input)
         };
         return DateTime.SpecifyKind(dt, DateTimeKind.Local);
@@ -95,5 +97,18 @@ public class DateParser
                 Enum.GetValues<DayOfWeek>().Single(d => d.ToString().StartsWith(day, StringComparison.InvariantCultureIgnoreCase));
 
         }
+    }
+
+    private DateTime ToDateQuantity(string quantityText)
+    {
+        var (quantity, period) = ExpressionParser.ParseDateQuantity(quantityText);
+
+        return (quantity, period) switch
+        {
+            (_, 'd') => Local.Date.AddDays(quantity),
+            (_, 'w') => Local.Date.AddDays(quantity * 7),
+            (_, 'm') => Local.Date.AddMonths(quantity),
+            _ => throw new SwitchExpressionException(),
+        };
     }
 }

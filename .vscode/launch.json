@@ -12,8 +12,7 @@
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/TaskTitan.Cli/bin/Debug/net9.0/win-x64/task.dll",
             "args": [
-                "add",
-                "123"
+                "list"
             ],
             "cwd": "${workspaceFolder}/src/TaskTitan.Cli",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
