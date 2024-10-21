@@ -7,7 +7,7 @@ using TaskTitan.Data;
 
 namespace TaskTitan.Cli.Commands;
 
-internal sealed class ListCommand : Command
+public sealed class ListCommand : Command
 {
     public ListCommand() : base("list", "Add a task to the list")
     {
@@ -16,6 +16,20 @@ internal sealed class ListCommand : Command
 
     public static void AddOptions(Command command)
     {
+    }
+
+    new public class Handler(IAnsiConsole console, LiteDbContext context, ILogger<ListCommand> logger) : ICommandHandler
+    {
+        public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
+
+        public async Task<int> InvokeAsync(InvocationContext context)
+        {
+            // var tasks = await context.GetAllTasks();
+            logger.LogInformation("Information logged");
+            console.WriteLine("Hello from list command");
+
+            return await Task.FromResult(1);
+        }
     }
 
     // public class Handler(IAnsiConsole console, LiteDbContext context) : AsynchronousCliAction
@@ -28,17 +42,4 @@ internal sealed class ListCommand : Command
     //         return await Task.FromResult(1);
     //     }
     // }
-
-    new public class Handler(IAnsiConsole console, LiteDbContext context) : ICommandHandler
-    {
-        public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
-
-        public async Task<int> InvokeAsync(InvocationContext context)
-        {
-            // var tasks = await context.GetAllTasks();
-            console.WriteLine("Hello from list command");
-
-            return await Task.FromResult(1);
-        }
-    }
 }

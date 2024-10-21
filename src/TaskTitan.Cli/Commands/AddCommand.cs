@@ -25,8 +25,6 @@ public sealed class AddCommand : Command
         parse: ar => string.Join(' ', ar.Tokens)
         )
         {
-
-            // Parser = ar => string.Join(' ', ar.Tokens),
             Arity = ArgumentArity.OneOrMore,
         };
 
@@ -36,11 +34,29 @@ public sealed class AddCommand : Command
          parseArgument: ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
          aliases: ["-m", "--modify"])
         {
-            // Parser = ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
         };
         command.Add(modificationOption);
+
+        // var descriptionArgument = new CliArgument<string>("description")
+        // {
+        //     CustomParser = ar => string.Join(' ', ar.Tokens),
+        //     Arity = ArgumentArity.OneOrMore,
+        // };
+
+        // command.Add(descriptionArgument);
+
+        // var modificationOption = new CliOption<CommandExpression?>(
+        //     name: "modify",
+        //     aliases: ["-m", "--modify"]
+        //  )
+        // {
+        //     CustomParser = ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
+        //     AllowMultipleArgumentsPerToken = true,
+        //     Arity = ArgumentArity.OneOrMore
+        // };
+        // command.Add(modificationOption);
     }
 
     public class Handler(IAnsiConsole console, LiteDbContext dbContext) : ICommandHandler
