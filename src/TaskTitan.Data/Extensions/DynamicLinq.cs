@@ -3,23 +3,8 @@ using TaskTitan.Data.Expressions;
 using static TaskTitan.Data.Enums;
 
 namespace TaskTitan.Data.Extensions;
-
 public static class DynamicLinq
 {
-    // public static string ParseToString(Expr expr)
-    // {
-    //     string linq = expr switch
-    //     {
-    //         AttributePair attr => AttributePairToString(attr),
-    //         BinaryFilter => x,
-    //     };
-    // }
-
-    // private static string AttributePairToString(AttributePair attr)
-    // {
-    //     attr.Key.
-    // }
-
     public static string ToDynamicLinq(this FilterExpression filter)
     {
         return ExprToLinq(filter.Expr);
