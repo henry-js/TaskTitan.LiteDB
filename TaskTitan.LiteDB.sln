@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTitan.Data", "src\TaskT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTitan.Tests", "tests\TaskTitan.Tests.csproj", "{47DF6005-B874-477A-B6C9-BC6A70B0605B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "src\Playground\Playground.csproj", "{15CE2D0C-58E5-4DD0-BF40-8FCC71EB34F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "Playground\Playground.csproj", "{15CE2D0C-58E5-4DD0-BF40-8FCC71EB34F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", ".nuke\_build.csproj", "{049EA51A-B6C9-4289-B23C-09A9413F0985}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +24,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{049EA51A-B6C9-4289-B23C-09A9413F0985}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{049EA51A-B6C9-4289-B23C-09A9413F0985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3588B1F-AA6B-47D9-AD74-F30D2006E470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3588B1F-AA6B-47D9-AD74-F30D2006E470}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3588B1F-AA6B-47D9-AD74-F30D2006E470}.Release|Any CPU.ActiveCfg = Release|Any CPU

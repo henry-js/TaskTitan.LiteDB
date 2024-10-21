@@ -59,7 +59,7 @@ public sealed class AddCommand : Command
         // command.Add(modificationOption);
     }
 
-    public class Handler(IAnsiConsole console, LiteDbContext dbContext) : ICommandHandler
+    new public class Handler(IAnsiConsole console, LiteDbContext dbContext) : ICommandHandler
     {
         public required string Description { get; set; }
         public CommandExpression? Modify { get; set; }
