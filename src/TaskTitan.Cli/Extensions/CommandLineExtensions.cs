@@ -12,7 +12,7 @@ public static class CommandLineExtensions
     public static IHostBuilder UseProjectCommandHandlers(this IHostBuilder builder)
     {
         var inf = typeof(ICommandHandler);
-        var commandHandlers = typeof(CommandLineExtensions).Assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && inf.IsAssignableFrom(t) && !t.DeclaringType.IsAssignableTo(typeof(RootCommand)));
+        var commandHandlers = typeof(CommandLineExtensions).Assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && inf.IsAssignableFrom(t) && !t.DeclaringType!.IsAssignableTo(typeof(RootCommand)));
 
         Type[] types = [typeof(IHostBuilder), typeof(Type), typeof(Type)];
         MethodInfo mi = typeof(HostingExtensions).GetMethod(UseCommandHandler, types)

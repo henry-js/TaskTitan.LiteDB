@@ -29,16 +29,23 @@
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageReference Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
     <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="Tomlyn" Version="0.17.0" />
+    <PackageReference Include="Tomlyn.Extensions.Configuration" Version="1.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TaskTitan.Data\TaskTitan.Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="reports.toml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

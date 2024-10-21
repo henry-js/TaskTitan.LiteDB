@@ -2,16 +2,12 @@ namespace TaskTitan.Data;
 
 public class TaskItem
 {
-    public TaskItem()
-    {
-
-    }
     public TaskItem(string description)
     {
         Description = description;
     }
 
-    public int RowId { get; set; }
+    public int Id { get; set; }
     public string Description { get; set; }
     public int[] Depends { get; set; } = [];
     public DateTime? Due { get; set; }
@@ -28,7 +24,7 @@ public class TaskItem
     public DateTime? Until { get; set; }
     public double Urgency { get; set; }
     public DateTime? Wait { get; set; }
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Uuid { get; set; } = Guid.NewGuid();
 
 }
 

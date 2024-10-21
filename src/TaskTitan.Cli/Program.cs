@@ -12,8 +12,10 @@ using TaskTitan.Cli.Commands;
 using TaskTitan.Cli.Extensions;
 using TaskTitan.Configuration;
 using TaskTitan.Data;
+using TaskTitan.Data.Reports;
+using Tomlyn;
+using Tomlyn.Extensions.Configuration;
 
-Global.CreateConfigurationDirectories();
 
 // var cmd = new CliRootCommand();
 // cmd.Add(CliGlobalOptions.FilterOption);
@@ -38,10 +40,16 @@ Global.CreateConfigurationDirectories();
 
 // return result;
 
+Global.CreateConfigurationDirectories();
+var reports = Toml.ToModel<ReportDictionary>(File.ReadAllText(Path.Combine(Global.ConfigDirectoryPath, "reports.toml")));
+
 var cmd = new RootCommand();
 // cmd.AddGlobalOption(CliGlobalOptions.FilterOption);
 cmd.AddCommand(new AddCommand());
-cmd.AddCommand(new ListCommand());
+cmd.AddCommand(new ListCommand(reports));
+
+
+Global.LoadReports(reports);
 
 var cmdLine = new CommandLineBuilder(cmd)
     .UseHost(_ => Host.CreateDefaultBuilder(args), builder =>

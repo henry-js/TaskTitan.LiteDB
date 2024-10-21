@@ -1,8 +1,10 @@
+using System.Runtime.CompilerServices;
 using TaskTitan.Data.Expressions;
+using static TaskTitan.Data.Enums;
 
 namespace TaskTitan.Data.Extensions;
 
-public static class ExprToLinqParser
+public static class DynamicLinq
 {
     // public static string ParseToString(Expr expr)
     // {
@@ -17,4 +19,88 @@ public static class ExprToLinqParser
     // {
     //     attr.Key.
     // }
+
+    public static string ToDynamicLinq(this FilterExpression filter)
+    {
+        return ExprToLinq(filter.Expr);
+    }
+
+    private static string ExprToLinq(Expr expr, int depth = 0)
+    {
+        return expr switch
+        {
+            BinaryFilter bf => BinaryFilterToLinq(bf, depth),
+            TaskAttribute attr => AttributeToLinq(attr),
+        };
+    }
+
+    private static string AttributeToLinq(TaskAttribute attr)
+    {
+        if (attr is TaskAttribute<DateTime> t)
+        {
+            return ParseDateTimeAttribute(t);
+        }
+        else if (attr is TaskAttribute<double> d)
+        {
+            return ParseNumberAttribute(d);
+        }
+        else
+        {
+            return ParseTextAttribute(attr as TaskAttribute<string>);
+        }
+
+        string ParseDateTimeAttribute(TaskAttribute<DateTime> attribute)
+        {
+            return attribute.Modifier switch
+            {
+                ColModifier.Equals or null => $"{attribute.PropertyName} == {attribute.Value}",
+                ColModifier.Before => $"{attribute.PropertyName} < {attribute.Value}",
+                ColModifier.After => $"{attribute.PropertyName} >= {attribute.Value}",
+                ColModifier.Is => $"{attribute.PropertyName} == {attribute.Value}",
+                ColModifier.Not => $"{attribute.PropertyName} != {attribute.Value}",
+                _ => throw new SwitchExpressionException($"Modifier {attribute.Modifier} is not supported for Date attributes"),
+            };
+        }
+        string ParseTextAttribute(TaskAttribute<string> attribute)
+        {
+            return attribute.Modifier switch
+            {
+                ColModifier.Equals or null => $"{attribute.PropertyName}.Equals(\"{attribute.Value}\", StringComparison.CurrentCultureIgnoreCase)",
+                ColModifier.Isnt => $"!{attribute.PropertyName}.Equals(\"{attribute.Value}\", StringComparison.CurrentCultureIgnoreCase)",
+                ColModifier.Has or ColModifier.Contains => $"{attribute.PropertyName}.Contains(\"{attribute.Value}\", StringComparison.CurrentCultureIgnoreCase)",
+                ColModifier.Hasnt => $"!{attribute.PropertyName}.Contains(\"{attribute.Value}\", StringComparison.CurrentCultureIgnoreCase)",
+                ColModifier.Startswith => $"{attribute.PropertyName}.StartsWith(\"{attribute.Value}\", StringComparison.CurrentCultureIgnoreCase)",
+                ColModifier.Endswith => $"{attribute.PropertyName}.EndsWith(\"{attribute.Value}\", StringComparison.CurrentCultureIgnoreCase)",
+                _ => throw new SwitchExpressionException($"Modifier {attribute.Modifier} is not supported for Text attributes"),
+            };
+        }
+        string ParseNumberAttribute(TaskAttribute<double> attribute)
+        {
+            return attribute.Modifier switch
+            {
+                ColModifier.Equals or null => $"{attribute.PropertyName} == {attribute.Value}",
+                ColModifier.Below => $"{attribute.PropertyName} < {attribute.Value}",
+                ColModifier.Above => $"{attribute.PropertyName} >= {attribute.Value}",
+                ColModifier.Isnt => $"{attribute.PropertyName} != {attribute.Value}",
+                _ => throw new SwitchExpressionException($"Modifier {attribute.Modifier} is not supported for Text attributes"),
+            };
+        }
+    }
+
+    private static string BinaryFilterToLinq(BinaryFilter bf, int depth = 0)
+    {
+        depth++;
+        var left = ExprToLinq(bf.Left, depth);
+
+        var right = ExprToLinq(bf.Right, depth);
+
+        var Operator = bf.Operator switch
+        {
+            BinaryOperator.And => "&&",
+            BinaryOperator.Or => "||",
+            _ => throw new Exception()
+        };
+        depth--;
+        return depth == 0 ? $"{left} {Operator} {right}" : $"({left} {Operator} {right})";
+    }
 }

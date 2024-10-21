@@ -5,12 +5,16 @@ namespace TaskTitan.Data.Reports;
 
 public class CustomReport : IReport
 {
+    public CustomReport()
+    {
+
+    }
     public CustomReport(string name)
     {
         Name = name;
     }
     [JsonIgnore]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public required string Description { get; set; }
     public string Filter { get; set; } = string.Empty;
     public string[] Columns { get; set; } = [];

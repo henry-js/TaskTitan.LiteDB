@@ -71,12 +71,12 @@ public sealed class AddCommand : Command
             var tasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid);
             var orderedTasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid)
                 .FindAll()
-                .Select((item, index) => item.RowId = index);
+                .Select((item, index) => item.Id = index);
             var task = new TaskItem(Description);
 
             tasks.Insert(task);
 
-            var fetchedTask = tasks.FindById(task.Id);
+            var fetchedTask = tasks.FindById(task.Uuid);
 
             console.WriteLine(JsonSerializer.Serialize(fetchedTask));
 

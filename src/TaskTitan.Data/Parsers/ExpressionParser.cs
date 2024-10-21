@@ -1,4 +1,3 @@
-using System.Net;
 using Pidgin;
 using Pidgin.Expression;
 using TaskTitan.Data.Expressions;
@@ -100,8 +99,8 @@ public static class ExpressionParser
             ]
         );
 
-    public static void SetTimeProvider(TimeProvider timeProvider) =>
-        _dateParser = (timeProvider is null)
+    public static void SetTimeProvider(TimeProvider timeProvider)
+        => _dateParser = (timeProvider is null)
             ? new DateParser(TimeProvider.System)
             : new DateParser(timeProvider);
 
@@ -109,6 +108,7 @@ public static class ExpressionParser
         => _filtExpr
             .Select(expr => new FilterExpression(expr))
             .ParseOrThrow(input);
+
     public static CommandExpression ParseCommand(string input)
         => OneOf(
             _attribute,
@@ -116,12 +116,4 @@ public static class ExpressionParser
         ).SeparatedAtLeastOnce(Token(' '))
         .Select(exprs => new CommandExpression(exprs, input))
         .ParseOrThrow(input);
-
-    internal static (int, char) ParseDateQuantity(string input)
-        => Map(
-            (a, b) => (Convert.ToInt32(a), b),
-            Digit.AtLeastOnceString(),
-            Token('w').Or(Token('d'))
-            .Or(Token('m'))
-        ).ParseOrThrow(input);
 }

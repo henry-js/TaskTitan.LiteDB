@@ -14,7 +14,6 @@ public class AttributeColumnConfig
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ColType ColType { get; set; }
     public IReadOnlyList<ColFormat>? AllowedFormats { get; }
-    public HashSet<ColModifier> AllowedModifiers { get; }
 
     public AttributeColumnConfig(string name, bool isModifiable, ColFormat format, ColType type, List<ColFormat>? allowedFormats = null)
     {
@@ -23,13 +22,7 @@ public class AttributeColumnConfig
         Format = format;
         ColType = type;
         AllowedFormats = allowedFormats ?? AttributeColumnFormats.AllowedFormats[type];
-        AllowedModifiers = ColType switch
-        {
-            ColType.Date => [ColModifier.None, ColModifier.Not, ColModifier.Before, ColModifier.After, ColModifier.Is],
-            ColType.Text => [ColModifier.None, ColModifier.Any, ColModifier.Is, ColModifier.Not, ColModifier.Has, ColModifier.Hasnt, ColModifier.Startswith, ColModifier.Endswith],
-            ColType.Number => [ColModifier.None, ColModifier.Any, ColModifier.Below, ColModifier.Above, ColModifier.Is, ColModifier.Not],
-            _ => throw new SwitchExpressionException(type)
-        };
+
     }
 
     public void SetFormat(ColFormat format)

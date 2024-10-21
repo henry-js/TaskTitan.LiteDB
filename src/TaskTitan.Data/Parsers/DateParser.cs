@@ -1,6 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using Pidgin;
+using static Pidgin.Parser;
+using static Pidgin.Parser<char>;
+using static Pidgin.Parser<string>;
 
 namespace TaskTitan.Data.Parsers;
 
@@ -94,14 +97,14 @@ public class DateParser
             return newNow.Date;
 
             DayOfWeek ToDayOfWeek(string day) =>
-                Enum.GetValues<DayOfWeek>().Single(d => d.ToString().StartsWith(day, StringComparison.InvariantCultureIgnoreCase));
+                System.Enum.GetValues<DayOfWeek>().Single(d => d.ToString().StartsWith(day, StringComparison.InvariantCultureIgnoreCase));
 
         }
     }
 
     private DateTime ToDateQuantity(string quantityText)
     {
-        var (quantity, period) = ExpressionParser.ParseDateQuantity(quantityText);
+        var (quantity, period) = ParseDateQuantity(quantityText);
 
         return (quantity, period) switch
         {
@@ -111,4 +114,14 @@ public class DateParser
             _ => throw new SwitchExpressionException(),
         };
     }
+
+
+
+    private static (int, char) ParseDateQuantity(string input)
+        => Map(
+            (a, b) => (Convert.ToInt32(a), b),
+            Digit.AtLeastOnceString(),
+            Token('w').Or(Token('d'))
+            .Or(Token('m'))
+        ).ParseOrThrow(input);
 }

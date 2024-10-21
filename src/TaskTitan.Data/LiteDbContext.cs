@@ -16,6 +16,7 @@ public class LiteDbContext
             var db = new LiteDatabase(connectionString);
             if (db != null)
                 this.db = db;
+            else throw new ArgumentNullException(nameof(db));
         }
         catch (Exception ex)
         {

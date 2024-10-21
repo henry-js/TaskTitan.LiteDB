@@ -1,7 +1,12 @@
+using Microsoft.Extensions.Configuration;
+using TaskTitan.Data.Reports;
+
 namespace TaskTitan.Configuration;
 
 public static class Global
 {
+    private static ReportDictionary _reports = [];
+    public static ReportDictionary Reports => _reports;
     public const string APP_NAME = "TaskTitan";
     // public static readonly string DIRECTORY_NAME = $".{APP_NAME}".ToLower();
 
@@ -21,5 +26,10 @@ public static class Global
         if (!Directory.Exists(DataDirectoryPath)) Directory.CreateDirectory(DataDirectoryPath);
         if (!Directory.Exists(ConfigDirectoryPath)) Directory.CreateDirectory(ConfigDirectoryPath);
         if (!Directory.Exists(StateDirectoryPath)) Directory.CreateDirectory(StateDirectoryPath);
+    }
+
+    public static void LoadReports(ReportDictionary reports)
+    {
+        _reports = reports;
     }
 }
