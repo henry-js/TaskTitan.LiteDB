@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.Hosting;
 using System.CommandLine.Invocation;
+using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
@@ -21,58 +22,45 @@ public sealed class AddCommand : Command
 
     public static void AddOptions(Command command)
     {
-        var descriptionArgument = new Argument<string>("description",
-        parse: ar => string.Join(' ', ar.Tokens)
-        )
+        static CommandExpression parse(System.CommandLine.Parsing.ArgumentResult ar)
+        {
+            var builder = new StringBuilder().Append("desc:'");
+            List<string> attributes = [];
+            List<string> descValues = [];
+            for (int i = 0; i < ar.Tokens.Count; i++)
+            {
+                string current = ar.Tokens[i].Value;
+                if (current.Contains(':') || current.Contains('+'))
+                {
+                    attributes.Add(current);
+                }
+                else
+                {
+                    descValues.Add(current);
+                }
+            }
+            builder.AppendJoin(' ', descValues).Append('\'').Append(' ').AppendJoin(' ', attributes);
+            return ExpressionParser.ParseCommand(builder.ToString());
+        }
+
+        var descriptionArgument = new Argument<CommandExpression>("Modification",
+        parse: parse)
         {
             Arity = ArgumentArity.OneOrMore,
         };
 
         command.Add(descriptionArgument);
-
-        var modificationOption = new Option<CommandExpression?>(description: "modify",
-         parseArgument: ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
-         aliases: ["-m", "--modify"])
-        {
-            AllowMultipleArgumentsPerToken = true,
-            Arity = ArgumentArity.OneOrMore
-        };
-        command.Add(modificationOption);
-
-        // var descriptionArgument = new CliArgument<string>("description")
-        // {
-        //     CustomParser = ar => string.Join(' ', ar.Tokens),
-        //     Arity = ArgumentArity.OneOrMore,
-        // };
-
-        // command.Add(descriptionArgument);
-
-        // var modificationOption = new CliOption<CommandExpression?>(
-        //     name: "modify",
-        //     aliases: ["-m", "--modify"]
-        //  )
-        // {
-        //     CustomParser = ar => ExpressionParser.ParseCommand(string.Join(' ', ar.Tokens)),
-        //     AllowMultipleArgumentsPerToken = true,
-        //     Arity = ArgumentArity.OneOrMore
-        // };
-        // command.Add(modificationOption);
     }
 
     new public class Handler(IAnsiConsole console, LiteDbContext dbContext) : ICommandHandler
     {
-        public required string Description { get; set; }
-        public CommandExpression? Modify { get; set; }
+        public CommandExpression? Modification { get; set; }
 
         public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
         public async Task<int> InvokeAsync(InvocationContext context)
         {
-            var config = new DefaultConfiguration();
-            var tasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid);
-            var orderedTasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid)
-                .FindAll()
-                .Select((item, index) => item.Id = index);
-            var task = new TaskItem(Description);
+            var tasks = dbContext.Tasks;
+            var task = new TaskItem("Modification.Children");
 
             tasks.Insert(task);
 
@@ -84,23 +72,5 @@ public sealed class AddCommand : Command
             return 0;
         }
 
-        // public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
-        // {
-        //     var config = new DefaultConfiguration();
-        //     var tasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid);
-        //     var orderedTasks = dbContext.db.GetCollection<TaskItem>("tasks", LiteDB.BsonAutoId.Guid)
-        //         .FindAll()
-        //         .Select((item, index) => item.RowId = index);
-        //     var task = new TaskItem(Description);
-
-        //     tasks.Insert(task);
-
-        //     var fetchedTask = tasks.FindById(task.Id);
-
-        //     console.WriteLine(JsonSerializer.Serialize(fetchedTask));
-
-        //     console.WriteLine($"Added task {tasks.Count()}");
-        //     return 0;
-        // }
     }
 }
