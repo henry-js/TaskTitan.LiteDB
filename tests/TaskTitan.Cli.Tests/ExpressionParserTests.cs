@@ -19,11 +19,10 @@ public class PidginParserTests
         var result = ExpressionParser.ParseFilter(text);
 
 
-        TaskAttribute attribute = (result.Expr as TaskAttribute)!;
+        TaskProperty attribute = (result.Expr as TaskProperty)!;
 
-        await Assert.That(attribute.Field).IsEqualTo(keyText);
+        await Assert.That(attribute.Name).IsEqualTo(keyText);
         await Assert.That(attribute.Modifier).IsNull();
-        await Assert.That(attribute.StringValue).IsEqualTo(value);
     }
 
     [Test]
@@ -55,7 +54,7 @@ public class PidginParserTests
     }
 
     [Test]
-    [Arguments("due:tomorrow", typeof(TaskAttribute))]
+    [Arguments("due:tomorrow", typeof(TaskProperty))]
     [Arguments("+test or due:tomorrow", typeof(BinaryFilter))]
     [Arguments("due:tomorrow or project:home", typeof(BinaryFilter))]
     [Arguments("project:work and until:1w or due:monday", typeof(BinaryFilter))]

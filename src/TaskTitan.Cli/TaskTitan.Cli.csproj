@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>TaskTitan.Cli</RootNamespace>
     <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
+    <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <DebugType>embedded</DebugType>
     <AssemblyName>task</AssemblyName>

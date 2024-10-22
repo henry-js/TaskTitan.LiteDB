@@ -3,47 +3,45 @@ using static TaskTitan.Data.Enums;
 
 namespace TaskTitan.Data.Expressions;
 
-public abstract record TaskAttribute : Expr
+public abstract record TaskProperty : Expr
 {
-    public object? Value { get; set; }
-    public TaskAttribute(string field, string value, ColModifier? modifier)
+    public TaskProperty(string name, ColModifier? modifier)
     {
-        Field = field;
-        StringValue = value;
+        Name = name;
         Modifier = modifier;
     }
 
-    public string Field { get; }
-    public string PropertyName => _taskItemProperties.SingleOrDefault(p => p.Equals(Field, StringComparison.OrdinalIgnoreCase)) ?? Field;
+    public string Name { get; }
+    public string PropertyName => _taskItemProperties.SingleOrDefault(p => p.Equals(Name, StringComparison.OrdinalIgnoreCase)) ?? Name;
     public ColModifier? Modifier { get; }
-    public string? StringValue { get; }
 
-    public static TaskAttribute Create(string field, string value, DateParser _dateParser)
+    public static TaskProperty Create(string field, string value, DateParser _dateParser)
     {
         var split = field.Split('.');
         field = split[0];
-        Configuration.DefaultConfiguration.Columns.TryGetValue(field, out var col);
-        if (col is null)
+        var colKey = Configuration.DefaultConfiguration.Columns.Keys.FirstOrDefault(k => k.StartsWith(field, StringComparison.OrdinalIgnoreCase));
+        if (!Configuration.DefaultConfiguration.Columns.TryGetValue(colKey, out var col))
         {
-            //TODO: check for UDA
+            //TODO: col is UDA
+            // Configuration.UserDefinedAttributes.TryGetValue(colKey, out col);
         }
 
         ColModifier? modifier = null;
 
         if (split.Length < 2) modifier = null;
         // else modifier = col?.AllowedModifiers.FirstOrDefault(m => m.ToString().Equals(split[1], StringComparison.OrdinalIgnoreCase));
-        else modifier = Enum.GetValues<ColModifier>().FirstOrDefault(m => m.ToString().Equals(split[1], StringComparison.OrdinalIgnoreCase));
+        else modifier = Enum.GetValues<ColModifier>().FirstOrDefault(m => m.ToString().Contains(split[1], StringComparison.OrdinalIgnoreCase));
 
         if (col is null) throw new Exception();
         switch (col.ColType)
         {
             case ColType.Date:
                 var dateVal = _dateParser.Parse(value);
-                return new TaskAttribute<DateTime>(split[0], value, dateVal, modifier);
+                return new TaskAttribute<DateTime>(split[0], dateVal, modifier);
             case ColType.Text:
-                return new TaskAttribute<string>(split[0], value, value, modifier);
+                return new TaskAttribute<string>(split[0], value, modifier);
             case ColType.Number:
-                return new TaskAttribute<double>(split[0], value, Convert.ToDouble(value), modifier);
+                return new TaskAttribute<double>(split[0], Convert.ToDouble(value), modifier);
             default:
                 throw new Exception();
         }
@@ -52,11 +50,18 @@ public abstract record TaskAttribute : Expr
     private static readonly string[] _taskItemProperties = typeof(TaskItem).GetProperties().Select(x => x.Name).ToArray();
 }
 
-public record TaskAttribute<T> : TaskAttribute
+public record TaskAttribute<T> : TaskProperty
 {
-    internal TaskAttribute(string field, string stringValue, T value, ColModifier? modifier = null) : base(field, stringValue, modifier)
+    internal TaskAttribute(string field, T value, ColModifier? modifier = null) : base(field, modifier)
     {
         Value = value;
     }
-    public new T Value { get; }
+    public T Value { get; }
+}
+
+public record TaskTag : TaskProperty
+{
+    public TaskTag(string name) : base(name, null)
+    {
+    }
 }

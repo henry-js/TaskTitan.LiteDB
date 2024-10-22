@@ -47,37 +47,15 @@ public static class ExpressionParser
             _colon
         ).ManyString();
 
-    // // FIX: might be broken, make sure working with key modifiers
-    // private static readonly Parser<char, Key> _builtInAttribute
-    //     = OneOf(
-    //     Constants.BuiltInKeys.Select(k => String(k))
-    //     )
-    //     .Select(a => new BuiltInAttributeKey(a))
-    //     .Cast<Key>();
-    // private static readonly Parser<char, Key> _udaAttribute
-    //     = Letter
-    //         .AtLeastOnceString()
-    //         .Select(s => new UserDefinedAttributeKey(s))
-    //         .Cast<Key>();
-    // internal static readonly Parser<char, Key> _attributePairKey
-    //     = OneOf(
-    //         Try(_builtInAttribute),
-    //         _udaAttribute
-    //     );
-    // internal static readonly Parser<char, string> _attributePairValue = _string.Or(_attributeValue);
-    // internal static readonly Parser<char, Expr> _attributePair
-    //     = Map(
-    //         (key, value) => new AttributePair(key, value),
-    //         _attributePairKey,
-    //         _colon.Then(_attributePairValue)
-    //     ).TraceResult().Cast<Expr>();
-
     internal static readonly Parser<char, Expr> _attribute
         = Map(
-            (field, _, value) => TaskAttribute.Create(field, value, _dateParser),
+            (field, _, value) => TaskProperty.Create(field, value, _dateParser),
             LetterOrDigit.Or(Token('.')).AtLeastOnceString(),
             Token(':'),
+            OneOf(
+            _string,
             LetterOrDigit.Or(Token('-')).Or(Token(':')).ManyString()
+            )
         ).Cast<Expr>();
     internal static readonly Parser<char, Expr> _tagExpression
         = Map(

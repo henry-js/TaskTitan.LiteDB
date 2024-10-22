@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Spectre.Console;
 using System.CommandLine;
@@ -14,31 +13,6 @@ using TaskTitan.Configuration;
 using TaskTitan.Data;
 using TaskTitan.Data.Reports;
 using Tomlyn;
-using Tomlyn.Extensions.Configuration;
-
-
-// var cmd = new CliRootCommand();
-// cmd.Add(CliGlobalOptions.FilterOption);
-// cmd.Add(new AddCommand().UseCommandHandler<AddCommand.Handler>());
-// cmd.Add(new ListCommand().UseCommandHandler<ListCommand.Handler>());
-
-// var path = $@"Filename={Global.DataDirectoryPath}\tasktitan.db";
-
-// var cmdLine = new CliConfiguration(cmd)
-//     .UseHost(_ => Host.CreateDefaultBuilder(args), builder =>
-//     {
-//         builder.ConfigureAppConfiguration(config => config.AddJsonFile("appsettings.json", false))
-//             .ConfigureLogging((c, l) => l.ClearProviders())
-//             .ConfigureServices((context, services) =>
-//             {
-//                 services.AddTransient(_ => AnsiConsole.Console);
-//                 services.AddTransient(f => new LiteDbContext(path));
-//             });
-//     });
-
-// int result = await cmdLine.InvokeAsync(args);
-
-// return result;
 
 Global.CreateConfigurationDirectories();
 var reports = Toml.ToModel<ReportDictionary>(File.ReadAllText(Path.Combine(Global.ConfigDirectoryPath, "reports.toml")));

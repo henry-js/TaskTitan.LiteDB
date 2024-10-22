@@ -5,7 +5,7 @@ using static TaskTitan.Data.Enums;
 
 namespace TaskTitan.Data.Extensions;
 
-public static class LiteDbQuery
+public static class FilterToBson
 {
     public static BsonExpression ToBsonExpression(this FilterExpression filter)
     {
@@ -17,11 +17,11 @@ public static class LiteDbQuery
         return expr switch
         {
             BinaryFilter bf => BinaryFilterToBsonExpression(bf, depth),
-            TaskAttribute attr => AttributeToBsonExpression(attr),
+            TaskProperty attr => AttributeToBsonExpression(attr),
         };
     }
 
-    private static BsonExpression AttributeToBsonExpression(TaskAttribute attr)
+    private static BsonExpression AttributeToBsonExpression(TaskProperty attr)
     {
         if (attr is TaskAttribute<DateTime> t)
         {

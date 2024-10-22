@@ -2,12 +2,11 @@ using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.Windows.Input;
 using TaskTitan.Data;
 using TaskTitan.Data.Expressions;
+using TaskTitan.Data.Extensions;
 using TaskTitan.Data.Parsers;
 using TaskTitan.Data.Reports;
-using static TaskTitan.Data.Extensions.DynamicLinq;
 
 namespace TaskTitan.Cli.Commands;
 
@@ -54,8 +53,8 @@ public sealed class ListCommand : Command
         {
             string linqFilterText = Report switch
             {
-                not null => ExpressionParser.ParseFilter(Report.Filter).ToDynamicLinq(),
-                _ => (Filter is not null) ? Filter.ToDynamicLinq() : ""
+                not null => ExpressionParser.ParseFilter(Report.Filter).ToBsonExpression(),
+                _ => (Filter is not null) ? Filter.ToBsonExpression() : ""
             };
 
             logger.LogInformation("Information logged");
@@ -64,15 +63,4 @@ public sealed class ListCommand : Command
             return await Task.FromResult(1);
         }
     }
-
-    // public class Handler(IAnsiConsole console, LiteDbContext context) : AsynchronousCliAction
-    // {
-    //     public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
-    //     {
-    //         // var tasks = await context.GetAllTasks();
-    //         console.WriteLine("Hello from list command");
-
-    //         return await Task.FromResult(1);
-    //     }
-    // }
 }

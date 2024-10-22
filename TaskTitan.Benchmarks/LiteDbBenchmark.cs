@@ -10,7 +10,7 @@ namespace TaskTitan.Benchmarks;
 [SimpleJob(RunStrategy.ColdStart, launchCount: 1)]
 public class LiteDbBenchmark
 {
-    private LiteDbTaskStore _taskStore;
+    private LiteDbTaskStore _taskStore = null!;
 
     [Params(50, 500, 5000)]
     public int TaskCount;

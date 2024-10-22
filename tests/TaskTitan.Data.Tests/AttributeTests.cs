@@ -21,7 +21,7 @@ public class AttributeTests
         string text = "due:tomorrow";
 
         var pair = text.Split(':');
-        var attribute = TaskAttribute.Create(pair[0], pair[1], _dateParser);
+        var attribute = TaskProperty.Create(pair[0], pair[1], _dateParser);
 
         var actual = attribute as TaskAttribute<DateTime>;
         await Assert.That(actual).IsNotNull();
@@ -36,7 +36,7 @@ public class AttributeTests
         string text = "due:2024-12-12";
 
         var pair = text.Split(':');
-        var attribute = TaskAttribute.Create(pair[0], pair[1], _dateParser);
+        var attribute = TaskProperty.Create(pair[0], pair[1], _dateParser);
 
         var actual = attribute as TaskAttribute<DateTime>;
         await Assert.That(actual).IsNotNull();
@@ -50,7 +50,7 @@ public class AttributeTests
         string text = "due.after:tomorrow";
 
         var pair = text.Split(':');
-        var attribute = TaskAttribute.Create(pair[0], pair[1], _dateParser);
+        var attribute = TaskProperty.Create(pair[0], pair[1], _dateParser);
 
         var actual = attribute as TaskAttribute<DateTime>;
         await Assert.That(actual).IsNotNull();
@@ -64,7 +64,7 @@ public class AttributeTests
         string text = "project:home";
 
         var pair = text.Split(':');
-        var attribute = TaskAttribute.Create(pair[0], pair[1], _dateParser);
+        var attribute = TaskProperty.Create(pair[0], pair[1], _dateParser);
 
         var actual = attribute as TaskAttribute<string>;
         await Assert.That(actual).IsNotNull();
@@ -76,7 +76,7 @@ public class AttributeTests
     [Test]
     public async Task AnExpressionCanBeConvertedToDynamicLinq()
     {
-        var attribute = TaskAttribute.Create("due", "tomorrow", _dateParser);
+        var attribute = TaskProperty.Create("due", "tomorrow", _dateParser);
         var expected = $"Due == {new DateTime(2024, 06, 07, 0, 0, 0)}";
         var expr = new FilterExpression(attribute);
         var converted = expr.ToDynamicLinq();
@@ -91,7 +91,7 @@ public class AttributeTests
     [Arguments("until.not", "thursday", $"Until != 13/06/2024 00:00:00")]
     public async Task ManyDateExpressionsCanBeConvertedToDynamicLinq(string field, string value, string expected)
     {
-        var attribute = TaskAttribute.Create(field, value, _dateParser);
+        var attribute = TaskProperty.Create(field, value, _dateParser);
         var expr = new FilterExpression(attribute);
         var converted = expr.ToDynamicLinq();
 
@@ -115,7 +115,7 @@ public class AttributeTests
     [Arguments("uuid.endswith", "03b", $"Uuid.EndsWith(\"03b\", StringComparison.CurrentCultureIgnoreCase)")]
     public async Task ManyTextExpressionsCanBeConvertedToDynamicLinq(string field, string value, string expected)
     {
-        var attribute = TaskAttribute.Create(field, value, _dateParser);
+        var attribute = TaskProperty.Create(field, value, _dateParser);
         var expr = new FilterExpression(attribute);
         var converted = expr.ToDynamicLinq();
 
@@ -126,8 +126,8 @@ public class AttributeTests
     public async Task BinaryExpressionCanBeConvertedToDynamicLinq()
     {
         var expected = $"Due < 07/06/2024 00:00:00 || Project.Equals(\"work\", StringComparison.CurrentCultureIgnoreCase)";
-        var attribute1 = TaskAttribute.Create("due.before", "tomorrow", _dateParser);
-        var attribute2 = TaskAttribute.Create("project", "work", _dateParser);
+        var attribute1 = TaskProperty.Create("due.before", "tomorrow", _dateParser);
+        var attribute2 = TaskProperty.Create("project", "work", _dateParser);
 
         var binary = new BinaryFilter(attribute1, BinaryOperator.Or, attribute2);
 
@@ -142,9 +142,9 @@ public class AttributeTests
     public async Task DeepBinaryExpressionCanBeConvertedToDynamicLinq()
     {
         var expected = $"(Due < 07/06/2024 00:00:00 && Project.Equals(\"work\", StringComparison.CurrentCultureIgnoreCase)) || Project.Contains(\"home\", StringComparison.CurrentCultureIgnoreCase)";
-        var attribute1 = TaskAttribute.Create("due.before", "tomorrow", _dateParser);
-        var attribute2 = TaskAttribute.Create("project", "work", _dateParser);
-        var attribute3 = TaskAttribute.Create("project.has", "home", _dateParser);
+        var attribute1 = TaskProperty.Create("due.before", "tomorrow", _dateParser);
+        var attribute2 = TaskProperty.Create("project", "work", _dateParser);
+        var attribute3 = TaskProperty.Create("project.has", "home", _dateParser);
         var binary = new BinaryFilter(attribute1, BinaryOperator.And, attribute2);
 
         var binary2 = new BinaryFilter(binary, BinaryOperator.Or, attribute3);

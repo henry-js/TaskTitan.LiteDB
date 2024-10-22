@@ -46,21 +46,23 @@ partial class Build : NukeBuild
         .Executes(() =>
         {
             DotNetBuild(_ => _
-                .CombineWith([ProjectDirectory, TestDirectory], (_, v) =>
-                {
-                    _
+                        // .CombineWith([ProjectDirectory, TestDirectory], (_, v) =>
+                        // {
+                        //     _
                         .EnableNoLogo()
                         .EnableNoRestore()
-                        .SetProjectFile(v)
-                        .SetConfiguration(Configuration);
-                    if (v == ProjectDirectory)
-                    {
-                        _.SetRuntime(Runtime)
-                        .SetFramework(Framework);
-                    }
-                    return _;
-                }
-                )
+                        .SetProjectFile(Solution.Directory)
+            //         .SetConfiguration(Configuration);
+            //     if (v == ProjectDirectory)
+            //     {
+            //         _.SetRuntime(Runtime)
+            //         .SetFramework(Framework);
+            //     }
+            //     return _;
+            // }
+            // )
+
+
             );
         });
 
@@ -74,9 +76,9 @@ partial class Build : NukeBuild
                 .EnableNoBuild()
                 .SetConfiguration(Configuration)
                 .SetProjectFile(TestDirectory)
-                .SetResultsDirectory(TestResultsDirectory)
-                .SetProcessArgumentConfigurator(_ => _
-                    .Add("-- --coverage --coverage-output-format cobertura --results-directory ./results"))
+            // .SetResultsDirectory(TestResultsDirectory)
+            // .SetProcessArgumentConfigurator(_ => _
+            //     .Add("-- --coverage --coverage-output-format cobertura --results-directory ./results"))
             );
         });
 
@@ -89,6 +91,10 @@ partial class Build : NukeBuild
                 .EnableNoRestore()
                 .EnableNoBuild()
                 .SetConfiguration(Configuration)
+                .SetProject(ProjectDirectory)
+                .SetOutput(PublishDirectory)
+            // .SetPublishSingleFile(true)
+            // .SetSelfContained(false)
             );
 
         });

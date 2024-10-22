@@ -1,3 +1,5 @@
+using LiteDB;
+
 namespace TaskTitan.Data;
 
 public class TaskItem
@@ -24,22 +26,12 @@ public class TaskItem
     public DateTime? Until { get; set; }
     public double Urgency { get; set; }
     public DateTime? Wait { get; set; }
+    [BsonId]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
 }
 
 public enum TaskItemStatus { Pending, Started, Done }
-// public record TaskItemStatus(string Value)
-// {
-//     public static TaskItemStatus Pending => new("Pending");
-//     public static TaskItemStatus Started => new("Started");
-//     public static TaskItemStatus Done => new("Done");
-
-//     public override string ToString()
-//     {
-//         return Value;
-//     }
-// }
 
 public class Recurrence
 {
