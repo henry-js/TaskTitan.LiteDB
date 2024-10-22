@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <RootNamespace>TaskTitan.Benchmarks</RootNamespace>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -1,7 +1,7 @@
 using LiteDB;
 using TaskTitan.Data;
 
-namespace Playground;
+namespace TaskTitan.Benchmarks;
 
 public class LiteDbTaskStore
 {

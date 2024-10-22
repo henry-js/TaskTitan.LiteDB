@@ -1,12 +1,13 @@
-﻿
+
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
-using System;
-using System.Collections.Generic;
-using Playground;
+using BenchmarkDotNet.Engines;
 using Bogus;
 using TaskTitan.Data;
 
+namespace TaskTitan.Benchmarks;
+
+
+[SimpleJob(RunStrategy.ColdStart, launchCount: 1)]
 public class LiteDbBenchmark
 {
     private LiteDbTaskStore _taskStore;
@@ -53,13 +54,5 @@ public class LiteDbBenchmark
         {
             _taskStore.GetTask(i);
         }
-    }
-}
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        var summary = BenchmarkRunner.Run<LiteDbBenchmark>();
     }
 }
