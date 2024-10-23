@@ -30,10 +30,12 @@ public static class DynamicLinq
         {
             return ParseNumberAttribute(d);
         }
-        else
+        else if (attr is TaskAttribute<string> s)
         {
-            return ParseTextAttribute(attr as TaskAttribute<string>);
+            return ParseTextAttribute(s);
         }
+
+        throw new Exception($"Unsupported property type {attr.GetType()}");
 
         string ParseDateTimeAttribute(TaskAttribute<DateTime> attribute)
         {

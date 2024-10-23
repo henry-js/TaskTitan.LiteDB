@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Spectre.Console;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using TaskTitan.Configuration;
 using TaskTitan.Data;
 using TaskTitan.Data.Expressions;
 using TaskTitan.Data.Extensions;
@@ -12,7 +14,7 @@ namespace TaskTitan.Cli.Commands;
 
 public sealed class ListCommand : Command
 {
-    public ListCommand(ReportDictionary reports) : base("list", "Add a task to the list")
+    public ListCommand(ReportDictionary reports = null) : base("list", "Add a task to the list")
     {
         AddOptions(this, reports);
     }
@@ -43,14 +45,21 @@ public sealed class ListCommand : Command
         command.AddArgument(report);
     }
 
-    new public class Handler(IAnsiConsole console, LiteDbContext context, ILogger<ListCommand> logger) : ICommandHandler
+    new public class Handler(IAnsiConsole console, LiteDbContext db, ILogger<ListCommand> logger, IConfiguration configuration) : ICommandHandler
     {
+        private readonly IConfiguration configuration = configuration;
+
         public FilterExpression? Filter { get; set; }
         public CustomReport? Report { get; set; }
         public int Invoke(InvocationContext context) => InvokeAsync(context).Result;
 
         public async Task<int> InvokeAsync(InvocationContext context)
         {
+            var reportConfig = new ReportConfiguration();
+            configuration.GetSection("Report").Bind(reportConfig.Report);
+
+            Report = Report ?? reportConfig.Report["list"];
+
             string linqFilterText = Report switch
             {
                 not null => ExpressionParser.ParseFilter(Report.Filter).ToBsonExpression(),
@@ -59,6 +68,8 @@ public sealed class ListCommand : Command
 
             logger.LogInformation("Information logged");
             console.WriteLine("Hello from list command");
+
+            var tasks = db.ListFromFilter(linqFilterText, true);
 
             return await Task.FromResult(1);
         }

@@ -1,9 +1,10 @@
 using Pidgin;
 using Pidgin.Expression;
 using TaskTitan.Data.Expressions;
-using static Pidgin.Parser;
 using static Pidgin.Parser<char>;
 using static Pidgin.Parser<string>;
+using static Pidgin.Parser;
+using static TaskTitan.Data.Enums;
 
 namespace TaskTitan.Data.Parsers;
 
@@ -35,10 +36,10 @@ public static class ExpressionParser
         = Binary(
             Try(String("or").Between(SkipWhitespaces)).ThenReturn(BinaryOperator.Or)
         );
-    private static readonly Parser<char, TagOperator> _tagOperator
+    private static readonly Parser<char, ColModifier> _tagOperator
         = OneOf(
-            Char('+').ThenReturn(TagOperator.Include),
-            Char('-').ThenReturn(TagOperator.Exclude)
+            Char('+').ThenReturn(ColModifier.Include),
+            Char('-').ThenReturn(ColModifier.Exclude)
         );
     private static readonly Parser<char, string> _attributeValue
         = OneOf(
@@ -59,7 +60,7 @@ public static class ExpressionParser
         ).Cast<Expr>();
     internal static readonly Parser<char, Expr> _tagExpression
         = Map(
-            (modifier, value) => new Tag(modifier, value),
+            (modifier, value) => new TaskTag(value, modifier),
             _tagOperator,
             LetterOrDigit.AtLeastOnceString()
         ).Cast<Expr>();

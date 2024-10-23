@@ -7,11 +7,11 @@ using static TaskTitan.Data.Enums.ColType;
 
 namespace TaskTitan.Configuration;
 
-public class DefaultConfiguration
+public class ReportConfiguration
 {
     [DataMember(Name = "Report")]
-    public ReportDictionary Reports { get; set; } = [];
-    public DefaultConfiguration()
+    public ReportDictionary Report { get; set; } = [];
+    public ReportConfiguration()
     {
     }
 

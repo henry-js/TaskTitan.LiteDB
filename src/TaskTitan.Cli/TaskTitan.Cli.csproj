@@ -31,16 +31,31 @@
     <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
     <PackageReference Include="Tomlyn" Version="0.17.0" />
     <PackageReference Include="Tomlyn.Extensions.Configuration" Version="1.0.6" />
+    <PackageReference Include="Velopack" Version="0.0.831-gde49887" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskTitan.Data\TaskTitan.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Tomlyn" />
+    <Using Include="Velopack" />
+    <Using Include="Microsoft.Extensions.Configuration" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Microsoft.Extensions.Hosting" />
+    <Using Include="Serilog" />
+    <Using Include="Spectre.Console" />
+    <Using Include="System.CommandLine" />
+    <Using Include="System.CommandLine.Builder" />
+    <Using Include="System.CommandLine.Hosting" />
+    <Using Include="System.CommandLine.Parsing" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TaskTitan.Data\TaskTitan.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="reports.toml">

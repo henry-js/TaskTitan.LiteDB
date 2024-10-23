@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata;
+﻿using System.Collections;
+using System.Reflection.Metadata;
 using LiteDB;
 using TaskTitan.Configuration;
 
@@ -46,5 +47,20 @@ public class LiteDbContext
     public static string CreateConnectionStringFrom(string dataDirectoryPath)
     {
         return $@"Filename={Path.Combine(dataDirectoryPath, FILE_NAME)}";
+    }
+
+    public IEnumerable<TaskItem> ListFromFilter(string linqFilterText, bool rebuildIds)
+    {
+        var tasks = Tasks.Find(linqFilterText);
+        if (rebuildIds)
+        {
+            tasks = tasks.OrderBy(t => t.Entry)
+                .Select((t, i) =>
+                {
+                    t.Id = i + 1;
+                    return t;
+                });
+        }
+        return tasks;
     }
 }

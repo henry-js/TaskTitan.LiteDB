@@ -19,8 +19,10 @@ public abstract record TaskProperty : Expr
     {
         var split = field.Split('.');
         field = split[0];
-        var colKey = Configuration.DefaultConfiguration.Columns.Keys.FirstOrDefault(k => k.StartsWith(field, StringComparison.OrdinalIgnoreCase));
-        if (!Configuration.DefaultConfiguration.Columns.TryGetValue(colKey, out var col))
+        var colKey = Configuration.ReportConfiguration.Columns.Keys
+            .FirstOrDefault(k => k.StartsWith(field, StringComparison.OrdinalIgnoreCase))
+            ?? field;
+        if (!Configuration.ReportConfiguration.Columns.TryGetValue(colKey, out var col))
         {
             //TODO: col is UDA
             // Configuration.UserDefinedAttributes.TryGetValue(colKey, out col);
@@ -61,7 +63,7 @@ public record TaskAttribute<T> : TaskProperty
 
 public record TaskTag : TaskProperty
 {
-    public TaskTag(string name) : base(name, null)
+    public TaskTag(string name, ColModifier modifier) : base(name, modifier)
     {
     }
 }

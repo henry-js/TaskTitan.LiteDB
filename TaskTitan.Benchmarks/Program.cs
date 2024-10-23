@@ -8,8 +8,8 @@ using TaskTitan.Data.Parsers;
 using TaskTitan.Data.Reports;
 using Tomlyn;
 
-var config = new DefaultConfiguration();
-var reports = config.Reports;
+var config = new ReportConfiguration();
+var reports = config.Report;
 
 File.WriteAllText(Path.Combine(Global.ConfigDirectoryPath, "reports.toml"), Toml.FromModel(reports));
 reports = Toml.ToModel<ReportDictionary>(File.ReadAllText(Path.Combine(Global.ConfigDirectoryPath, "reports.toml")));

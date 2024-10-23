@@ -18,7 +18,13 @@ public static class FilterToBson
         {
             BinaryFilter bf => BinaryFilterToBsonExpression(bf, depth),
             TaskProperty attr => AttributeToBsonExpression(attr),
+            _ => throw new SwitchExpressionException()
         };
+    }
+
+    private static BsonExpression TagToBsonExpression(TaskTag tag)
+    {
+        throw new NotImplementedException();
     }
 
     private static BsonExpression AttributeToBsonExpression(TaskProperty attr)
@@ -31,10 +37,16 @@ public static class FilterToBson
         {
             return ParseNumberAttribute(d);
         }
-        else
+        else if (attr is TaskAttribute<string> s)
         {
-            return ParseTextAttribute(attr as TaskAttribute<string>);
+            return ParseTextAttribute(s);
         }
+        else if (attr is TaskTag tag)
+        {
+            return ParseTag(tag);
+        }
+
+        throw new Exception($"Unsupported property type {attr.GetType()}");
 
         BsonExpression ParseDateTimeAttribute(TaskAttribute<DateTime> attribute)
         {
@@ -71,7 +83,16 @@ public static class FilterToBson
                 _ => throw new SwitchExpressionException($"Modifier {attribute.Modifier} is not supported for Text attributes"),
             };
         }
+        BsonExpression ParseTag(TaskTag tag)
+        {
+            return tag switch
+            {
+                { Name: "WAITING", Modifier: ColModifier.Exclude } => Query.EQ(nameof(TaskItem.Wait), null),
+                { Name: "WAITING", Modifier: ColModifier.Include } => Query.Not(nameof(TaskItem.Wait), null),
+            };
+        }
     }
+
 
     private static BsonExpression BinaryFilterToBsonExpression(BinaryFilter bf, int depth)
     {

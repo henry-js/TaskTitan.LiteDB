@@ -96,12 +96,21 @@ partial class Build : NukeBuild
             // .SetPublishSingleFile(true)
             // .SetSelfContained(false)
             );
+        });
 
+
+    Target Artifact => _ => _
+        .TriggeredBy(Publish)
+        // .Requires(() => Configuration == "Release")
+        // .Produces([
+        //     ReleaseDirectory / Runtime,
+        // ])
+        .Executes(() =>
+        {
             var packDir = PublishDirectory;
             var outputDir = ReleaseDirectory;
             Log.Information("Velopack --packDir: {0}", packDir);
             Log.Information("Velopack --outputDir: {0}", outputDir);
             Vpk.Invoke($"pack --packId tasktitan --packVersion {MinVer.Version} --packDir {packDir} --mainExe task.exe --packTitle tasktitan --outputDir {outputDir}");
-
         });
 }

@@ -69,7 +69,7 @@ public sealed class AddCommand : Command
             console.WriteLine(JsonSerializer.Serialize(fetchedTask));
 
             console.WriteLine($"Added task {tasks.Count()}");
-            return 0;
+            return await Task.FromResult(0);
         }
 
     }
